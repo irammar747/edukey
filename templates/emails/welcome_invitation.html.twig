@@ -1,0 +1,19 @@
+{# templates/emails/welcome_invitation.html.twig #}
+<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 10px; padding: 20px;">
+    <h2 style="color: #0d6efd;">¡Bienvenido a EduKey, {{ usuario.nombre }}!</h2>
+    <p>Se ha creado una cuenta para ti en nuestra plataforma de gestión de recursos.</p>
+    <p>Para poder acceder, necesitas establecer una contraseña personal. Haz clic en el botón de abajo para empezar:</p>
+
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="{{ resetUrl }}" style="background-color: #0d6efd; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+            Configurar mi contraseña
+        </a>
+    </div>
+
+    <p style="font-size: 0.8em; color: #666;">
+        Este enlace caducará en {{ expiresAt|date('H:i') }} (24 horas).<br>
+        Si no esperabas este correo, puedes ignorarlo.
+    </p>
+    <hr style="border: 0; border-top: 1px solid #eee;">
+    <p style="text-align: center; font-size: 0.7em; color: #999;">&copy; {{ "now"|date("Y") }} EduKey - Gestión Académica</p>
+</div>

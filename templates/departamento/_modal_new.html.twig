@@ -1,0 +1,37 @@
+<div class="modal fade" id="modalDepartamento" tabindex="-1" aria-labelledby="modalDepartamentoLabel">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="modalDepartamentoLabel">
+                    <i data-lucide="building-2" class="me-2" style="width: 20px;"></i>
+                    Nuevo Departamento
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {# ESPACIO PARA ERRORES: Importante para el feedback #}
+                <div id="ajax-dep-error" class="alert alert-danger d-none small py-2">
+                    <i data-lucide="alert-circle" class="me-2" style="width: 16px;"></i>
+                    <span></span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="ajax-dep-nombre" class="form-label fw-bold">Nombre del Departamento</label>
+                    <input type="text" id="ajax-dep-nombre" class="form-control" placeholder="Ej: Matemáticas, Administración...">
+                </div>
+
+                <div class="mb-3">
+                    <label for="ajax-dep-desc" class="form-label fw-bold">Observaciones (Opcional)</label>
+                    <textarea id="ajax-dep-desc" class="form-control" rows="3" placeholder="Observaciones a tener en cuenta..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-link text-decoration-none text-muted" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="btn-ajax-guardar" class="btn btn-primary px-4">
+                    <i data-lucide="save" class="me-2" style="width: 18px;"></i>
+                    Guardar Departamento
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+{# templates/layout/_form_layout.html.twig #}
+
+{# Definimos una variable por defecto para el color si no se cambia en el embed #}
+{% set color = block('form_color') is defined ? block('form_color') : 'primary' %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-9 col-xl-8">
+            <div class="card shadow border-0">
+                {# Usamos la variable color para el header #}
+                <div class="card-header bg-{{ color }} text-white py-3">
+                    <h5 class="mb-0 d-flex align-items-center">
+                        <i data-lucide="{% block form_icon %}edit{% endblock %}" class="me-2"></i>
+                        {% block form_title %}Formulario{% endblock %}
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    {{ form_start(form) }}
+
+                    {% block form_content %}{% endblock %}
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <a href="{% block ruta_volver %}{% endblock %}" class="btn btn-link text-decoration-none text-muted">
+                            <i data-lucide="arrow-left" style="width: 18px;"></i> Volver
+                        </a>
+
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-{{ color }} d-flex align-items-center shadow-sm px-4">
+                                <i data-lucide="save" class="me-2" style="width: 18px;"></i>
+                                {% block btn_text %}Guardar{% endblock %}
+                            </button>
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

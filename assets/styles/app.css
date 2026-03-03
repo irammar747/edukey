@@ -1,3 +1,47 @@
+/* assets/styles/app.css */
+
 body {
-    background-color: skyblue;
+    /* Usamos !important para obligar a Bootstrap a aceptar nuestro color */
+    background-color: #f4f7f6 !important;
+    color: #333;
+}
+
+/* Reglas de la tabla (FUERA de las llaves del body) */
+.table td, .table th {
+    vertical-align: middle;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+/* Reglas de la tarjeta (FUERA de las llaves del body) */
+.card {
+    border-radius: 0.75rem;
+    border: none !important;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    background-color: #ffffff !important;
+}
+.fw-extrabold {
+    font-weight: 800; /* Hace que el título destaque mucho más */
+}
+
+/* Efecto hover en la tabla para que se sienta interactiva */
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.03) !important;
+    transition: background-color 0.2s ease;
+}
+/* Esto obliga a las celdas de la cabecera a ser oscuras */
+.cabecera-personalizada th {
+    background-color: #2e3236 !important; /* Negro casi puro */
+    color: #ffffff !important;           /* Texto blanco */
+    border-bottom: none !important;
+    padding-top: 15px !important;
+    padding-bottom: 15px !important;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+/* Para que la tabla se vea integrada en la tarjeta */
+.card.overflow-hidden {
+    overflow: hidden;
+    border-radius: 12px;
 }
