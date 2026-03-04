@@ -20,7 +20,7 @@
                             <div class="rounded-circle bg-success bg-opacity-10 p-3 d-inline-block mx-auto mb-3">
                                 <i data-lucide="users" class="text-success" style="width: 40px; height: 40px;"></i>
                             </div>
-                            <h5 class="text-dark fw-bold">Usuarios</h5>
+                            <h5 class="text-success-emphasis fw-bold">Usuarios</h5>
                             <p class="text-muted small">Administra cuentas, roles y accesos.</p>
                         </div>
                     </a>
@@ -35,13 +35,26 @@
                             <div class="rounded-circle bg-warning bg-opacity-10 p-3 d-inline-block mx-auto mb-3">
                                 <i data-lucide="building-2" class="text-warning" style="width: 40px; height: 40px;"></i>
                             </div>
-                            <h5 class="text-dark fw-bold">Departamentos</h5>
+                            <h5 class="text-warning-emphasis fw-bold">Departamentos</h5>
                             <p class="text-muted small">Organiza las áreas y personal del centro.</p>
                         </div>
                     </a>
                 </div>
             {% endif %}
-
+            {# TARJETA: RECURSOS (Admin y Personal) #}
+            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_PERSONAL') %}
+                <div class="col-md-4 col-lg-3">
+                    <a href="{{ path('app_recurso_index') }}" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm border-0 hover-card text-center p-4">
+                            <div class="rounded-circle bg-success bg-opacity-10 p-3 d-inline-block mx-auto mb-3">
+                                <i data-lucide="door-open" class="text-info" style="width: 40px; height: 40px;"></i>
+                            </div>
+                            <h5 class="text-info-emphasis fw-bold">Recursos</h5>
+                            <p class="text-muted small">Organiza las aulas y laboratorios del centro.</p>
+                        </div>
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </div>
 

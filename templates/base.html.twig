@@ -2,82 +2,236 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Bienvenido!{% endblock %}</title>
-    <link rel="icon"
-          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    <title>{% block title %}EduKey!{% endblock %}</title>
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
 
     {# Fuentes e Iconos Externos #}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    {% block stylesheets %}
+    <style>
+        body { overflow-x: hidden; background-color: #f8f9fa; }
 
-    {% endblock %}
+        /* NAVBAR SUPERIOR */
+        .navbar {
+            z-index: 1050;
+            height: 56px;
+            position: relative;
+        }
 
-    {% block javascripts %}
-        {{ importmap('app') }}
-    {% endblock %}
+        /* Botón de menú a la izquierda del todo */
+        #menuBtnContainer {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1100;
+            transition: opacity 0.2s ease, visibility 0.2s;
+        }
+
+        #menuBtnContainer.hidden {
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        /* SIDEBAR (Escondido por defecto) */
+        #sidebar {
+            min-width: 250px;
+            max-width: 250px;
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: -250px;
+            z-index: 1200;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #sidebar.active {
+            left: 0;
+        }
+
+        /* Capa oscura de fondo */
+        #overlay {
+            display: none;
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1150;
+            top: 0;
+            left: 0;
+        }
+        #overlay.active { display: block; }
+
+        /* Estilos de navegación del sidebar */
+        .sidebar-link {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: rgba(255,255,255,.8);
+            transition: 0.2s;
+        }
+        .sidebar-link:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+        /* Contenedor principal de las migas */
+        .breadcrumb {
+            display: flex;
+            align-items: center; /* Alineación vertical centrada */
+            gap: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Cada elemento (Dashboard, Recursos, etc) */
+        .breadcrumb-item {
+            display: flex;
+            align-items: center;
+            line-height: 1;
+        }
+
+        /* Separador personalizado */
+        .breadcrumb-item + .breadcrumb-item::before {
+            display: flex;
+            align-items: center;
+            content: "/";
+            padding: 0 5px;
+            color: #6c757d;
+            font-size: 1.1rem;
+            font-weight: 300;
+            transform: translateY(-1px);
+
+        }
+
+        /* Ajuste para el icono de Lucide */
+        .breadcrumb-item i {
+            display: inline-block;
+            vertical-align: middle;
+            margin-top: -2px;
+        }
+    </style>
+
+    {% block stylesheets %}{% endblock %}
+    {% block javascripts %}{{ importmap('app') }}{% endblock %}
 </head>
 <body>
-{% block header %}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4">
-        <div class="container">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
-                <i data-lucide="graduation-cap" class="me-2"></i> EduKey
-            </a>
-            <!-- Botón de hamburguesa -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="{{ path('app_departamento_index') }}">
-                            <i data-lucide="building-2" class="me-1" style="width: 18px;"></i> Departamentos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center" href="{{ path('app_usuario_index') }}">
-                            <i data-lucide="users" class="me-1" style="width: 18px;"></i> Usuarios
-                        </a>
-                    </li>
-                </ul>
-                <!-- Botones de Usuario y cerrar sesión -->
-                <ul class="navbar-nav ms-auto align-items-center">
-                    {% if app.user %}
-                        <li class="nav-item me-lg-3">
-                            <a class="nav-link d-flex align-items-center" href="{{ path('app_perfil') }}">
-                                <i data-lucide="user" class="me-1" style="width: 18px;"></i>
-                                Mi Perfil
-                            </a>
-                        </li>
+{% if app.user %}
+{# Capa para cerrar el menú al hacer clic fuera #}
+<div id="overlay"></div>
 
-                        <li class="nav-item mt-2 mt-lg-0">
-                            <a class="nav-link d-flex align-items-center text-danger" href="{{ path('app_logout') }}">
-                                <i data-lucide="log-out" class="me-1" style="width: 18px;"></i>
-                                Cerrar Sesión
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
+{# 1. NAVBAR SUPERIOR #}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm border-bottom border-secondary">
+    {# Botón posicionado a la izquierda del todo #}
+
+        <div id="menuBtnContainer">
+            <button type="button" id="openSidebar" class="btn btn-outline-light btn-sm">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+
+
+    <div class="container">
+        {# Logo alineado con el contenedor central #}
+        <span class="navbar-brand fw-bold d-flex align-items-center">
+            <i data-lucide="graduation-cap" class="me-2 text-primary"></i> EduKey
+        </span>
+
+        <ul class="navbar-nav ms-auto align-items-center flex-row">
+
+                <li class="nav-item me-4">
+                    <a class="nav-link d-flex align-items-center text-warning p-0" href="{{ path('app_perfil') }}">
+                        <i data-lucide="user" class="me-1 text-warning" style="width: 18px;"></i>
+                        <span class="d-none d-md-inline">Mi Perfil</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center text-danger p-0" href="{{ path('app_logout') }}">
+                        <i data-lucide="log-out" class="me-1" style="width: 18px;"></i>
+                        <span class="d-none d-md-inline">Cerrar Sesión</span>
+                    </a>
+                </li>
+
+        </ul>
+    </div>
+</nav>
+
+{# 2. SIDEBAR #}
+    <nav id="sidebar" class="bg-dark shadow-lg">
+        <div class="p-3 border-bottom border-secondary d-flex justify-content-between align-items-center" style="height: 56px;">
+            <h5 class="text-white fw-bold mb-0">Menú EduKey</h5>
+            <button type="button" id="closeSidebar" class="btn btn-link text-white p-0">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <div class="py-3">
+            <a href="{{ path('app_departamento_index') }}" class="sidebar-link">
+                <i data-lucide="building-2" class="text-warning me-3"></i> Departamentos
+            </a>
+            <a href="{{ path('app_usuario_index') }}" class="sidebar-link">
+                <i data-lucide="users" class="text-info me-3"></i> Usuarios
+            </a>
+            <a href="{{ path('app_recurso_index') }}" class="sidebar-link">
+                <i data-lucide="door-open" class="text-success me-3"></i> Recursos
+            </a>
         </div>
     </nav>
-{% endblock %}
-{% block body %}{% endblock %}
 
+{# 3. CONTENIDO PRINCIPAL #}
+<div id="content" class="container py-4">
+    {# Sección de Migas de Pan Global #}
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">
+                    <a href="{{ path('app_dashboard') }}" class="text-decoration-none d-flex align-items-center text-muted small fw-bold">
+                        <i data-lucide="home" class="me-1" style="width: 14px; height: 14px;"></i>
+                        Dashboard
+                    </a>
+                </li>
+                {# Aquí se insertarán los pasos adicionales desde las plantillas hijas #}
+                {% block breadcrumb_items %}{% endblock %}
+            </ol>
+        </nav>
+    {% endif %}
+    {% block body %}{% endblock %}
+    {% if app.user %}
+</div>
+{% endif %}
 {# SCRIPTS DE TERCEROS #}
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     document.addEventListener("turbo:load", function () {
-        // 1. Inicializamos los iconos de Lucide cada vez que cambia la página
+
+        // === 1. LÓGICA DE NAVEGACIÓN (Sidebar y Navbar) ===
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const openBtn = document.getElementById('openSidebar');
+        const closeBtn = document.getElementById('closeSidebar');
+        const btnContainer = document.getElementById('menuBtnContainer');
+
+        function toggleMenu(show) {
+            if (!sidebar || !overlay || !btnContainer) return;
+            if (show) {
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+                btnContainer.classList.add('hidden');
+            } else {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                btnContainer.classList.remove('hidden');
+            }
+        }
+
+        if(openBtn) openBtn.onclick = () => toggleMenu(true);
+        if(closeBtn) closeBtn.onclick = () => toggleMenu(false);
+        if(overlay) overlay.onclick = () => toggleMenu(false);
+
+        // === 2. INICIALIZACIÓN DE ICONOS LUCIDE ===
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
 
-        // 2. Mensajes flash reactivos a Turbo
+        // === 3. MENSAJES FLASH (SWEETALERT2) ===
         {% for label, messages in app.flashes %}
         {% for message in messages %}
         Swal.fire({
@@ -92,51 +246,35 @@
         });
         {% endfor %}
         {% endfor %}
-    });
 
-    document.addEventListener("turbo:load", function () {
-        // Buscamos inputs de password que no hayan sido procesados aún
-        // Usamos una clase de control para evitar duplicar el "ojo" si Turbo recarga
+        // === 4. LÓGICA DEL OJO PARA PASSWORD ===
         const passwordFields = document.querySelectorAll('input[type="password"]:not(.processed-pwd)');
-
         passwordFields.forEach(field => {
-            field.classList.add('processed-pwd'); // Marcamos como procesado
-
-            // Contenedor para el posicionamiento
+            field.classList.add('processed-pwd');
             const wrapper = document.createElement('div');
-            // flex-grow-1 para que no salte de línea dentro del input-group
             wrapper.className = 'position-relative flex-grow-1';
             field.parentNode.insertBefore(wrapper, field);
             wrapper.appendChild(field);
 
-            // Botón del ojo
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = 'btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted text-decoration-none pe-3';
+            btn.className = 'btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted text-decoration-none pe-4 me-2';
             btn.innerHTML = '<i data-lucide="eye" style="width: 18px; height: 18px;"></i>';
             btn.style.zIndex = '5';
-            btn.style.boxShadow = 'none'; // Evitar sombra de botón al hacer clic
-
+            btn.style.boxShadow = 'none';
             wrapper.appendChild(btn);
 
-            // Actualizamos solo este nuevo icono de Lucide
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
+            if (typeof lucide !== 'undefined') { lucide.createIcons(); }
 
-            // Evento para conmutar
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 const isPassword = field.type === 'password';
                 field.type = isPassword ? 'text' : 'password';
-
-                // Cambiamos el icono según el estado
                 btn.innerHTML = isPassword
                     ? '<i data-lucide="eye-off" style="width: 18px; height: 18px;"></i>'
                     : '<i data-lucide="eye" style="width: 18px; height: 18px;"></i>';
-
                 lucide.createIcons();
-                field.focus(); // Devolvemos el foco al input
+                field.focus();
             });
         });
     });

@@ -60,7 +60,7 @@ security:
         # Solo administradores pueden gestionar usuarios
         - { path: ^/usuario, roles: ROLE_ADMIN }
         # Cualquier otra ruta requiere estar logueado
-        # - { path: ^/, roles: ROLE_USER }
+        - { path: ^/, roles: ROLE_USER }
 
 when@test:
     security:
