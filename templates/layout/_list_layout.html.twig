@@ -8,27 +8,34 @@
     #tabla-interactiva thead th {
         background-color: #212529 !important;
         color: white !important;
+        padding-right: 35px !important;
+        border-right: 2px solid rgba(255, 255, 255, 0.5) !important; /* Línea de separación */
+        position: relative;
+        text-align: center;
     }
     .datatable-sorter::before, .datatable-sorter::after {
-        filter: brightness(0) invert(1) !important;
+        filter: brightness(0) invert(1) contrast(2) !important;
+
+        border-top-width: 5px !important;
+        border-bottom-width: 5px !important;
+    }
+    button.datatable-sorter{
+        padding-right: 35px !important;
     }
     .datatable-dropdown label {
         font-size: 14px !important;
         color: #6c757d;
     }
-    /* Estilo base para el botón personalizado */
-    .btn-reset-pass:hover {
-        background-color: #ffc107 !important; /* El color warning de Bootstrap */
-    }
 
     /* Al pasar el ratón sobre el botón, el icono se vuelve blanco */
-    .btn-reset-pass:hover .icon-mail {
+    .btn-action-custom:hover .icon{
         stroke: white !important;
     }
 
     /* Suavizamos la transición del color */
-    .icon-mail {
-        transition: stroke 0.2s ease-in-out;
+    .icon {
+        transition: stroke 0.1s ease-in-out;
+        width: 18px;
     }
     /* Centrado vertical para todas las celdas de la tabla */
     .table tbody td:not(:first-child),
@@ -47,9 +54,27 @@
     td .text-muted.small {
         line-height: 1.2; /* Evita que el interlineado empuje el contenido hacia abajo */
     }
+    @media (max-width: 767px) {
+        /* Quitamos el padding excesivo del contenedor de la tabla */
+        .table-responsive.p-3 {
+            padding: 0.5rem !important;
+        }
+
+        /* Reducimos el padding de las celdas de la tabla */
+        #tabla-interactiva th,
+        #tabla-interactiva td {
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+        }
+
+        /* Ajuste para que la primera celda (Código) no tenga tanto margen */
+        .ps-4 {
+            padding-left: 0.75rem !important;
+        }
+    }
 </style>
 
-<div class="container mt-4">
+<div class="container-fluid px-2 px-md-4 mt-4">
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div>
             <h1 class="fw-extrabold text-dark mb-0" style="letter-spacing: -1px;">
@@ -64,8 +89,8 @@
         </a>
     </div>
 
-    <div class="card shadow-sm border-0 overflow-hidden">
-        <div class="table-responsive p-3">
+    <div class="card shadow-sm border-0 overflow-hidden rounded-0 rounded-md-4">
+        <div class="table-responsive p-0 p-md-3"> {# p-0 en móvil para ganar espacio #}
             <table class="table table-hover align-middle mb-0" id="tabla-interactiva">
                 <thead class="cabecera-personalizada">
                 <tr>
@@ -74,7 +99,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% block tabla_cuerpo %}{% endblock %}
+                    {% block tabla_cuerpo %}{% endblock %}
                 </tbody>
             </table>
         </div>
@@ -152,8 +177,14 @@
 
     // 2. Inicialización de Tabla e Iconos compatible con Turbo
     document.addEventListener("turbo:load", function() {
+
         const table = document.querySelector("#tabla-interactiva");
+
         if (table) {
+
+            // Para evitar inicializar dos veces
+            if (table.classList.contains('dataTable-table')) return;
+
             const dataTable = new simpleDatatables.DataTable(table, {
                 searchable: true,
                 fixedHeight: false,
@@ -166,13 +197,20 @@
             });
 
             const refreshIcons = () => {
-                if (typeof lucide !== 'undefined') lucide.createIcons();
+                requestAnimationFrame(() => {
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+                });
             };
 
             // Refrescar al iniciar, al cambiar de página o al buscar
             dataTable.on("datatable.init", refreshIcons);
             dataTable.on("datatable.page", refreshIcons);
             dataTable.on("datatable.search", refreshIcons);
+            dataTable.on("datatable.sort", refreshIcons);
+            dataTable.on("datatable.perpage", refreshIcons);
+            dataTable.on("datatable.update", refreshIcons);
         }
 
         // Refrescar iconos general por si acaso

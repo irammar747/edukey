@@ -87,6 +87,8 @@
             display: flex;
             align-items: center;
             line-height: 1;
+            color: #0e0e0e !important;
+            font-weight: bold; /* Para que resalte más */
         }
 
         /* Separador personalizado */
@@ -95,11 +97,10 @@
             align-items: center;
             content: "/";
             padding: 0 5px;
-            color: #6c757d;
+            color: #7c8388;
             font-size: 1.1rem;
             font-weight: 300;
             transform: translateY(-1px);
-
         }
 
         /* Ajuste para el icono de Lucide */
@@ -107,6 +108,10 @@
             display: inline-block;
             vertical-align: middle;
             margin-top: -2px;
+        }
+        .breadcrumb-item.active {
+            color: #878d8f !important;
+            font-weight: normal;
         }
     </style>
 
@@ -172,11 +177,14 @@
             <a href="{{ path('app_recurso_index') }}" class="sidebar-link">
                 <i data-lucide="door-open" class="text-success me-3"></i> Recursos
             </a>
+            <a href="{{ path('app_llave_index') }}" class="sidebar-link">
+                <i data-lucide="key" class="text-light me-3"></i> Llaves
+            </a>
         </div>
     </nav>
 
 {# 3. CONTENIDO PRINCIPAL #}
-<div id="content" class="container py-4">
+<div class="container-fluid px-0 px-md-5 mt-4">
     {# Sección de Migas de Pan Global #}
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb mb-0">
@@ -200,84 +208,82 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    document.addEventListener("turbo:load", function () {
+    // Función para inicializar todo
+    function initApp() {
+        // === 1. ICONOS LUCIDE ===
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
 
-        // === 1. LÓGICA DE NAVEGACIÓN (Sidebar y Navbar) ===
+        // === 2. LÓGICA DE NAVEGACIÓN ===
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
         const openBtn = document.getElementById('openSidebar');
         const closeBtn = document.getElementById('closeSidebar');
         const btnContainer = document.getElementById('menuBtnContainer');
 
-        function toggleMenu(show) {
-            if (!sidebar || !overlay || !btnContainer) return;
-            if (show) {
-                sidebar.classList.add('active');
-                overlay.classList.add('active');
-                btnContainer.classList.add('hidden');
-            } else {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                btnContainer.classList.remove('hidden');
-            }
+        if (sidebar && overlay) {
+            const toggleMenu = (show) => {
+                sidebar.classList.toggle('active', show);
+                overlay.classList.toggle('active', show);
+                if (btnContainer) btnContainer.classList.toggle('hidden', show);
+            };
+
+            if(openBtn) openBtn.onclick = () => toggleMenu(true);
+            if(closeBtn) closeBtn.onclick = () => toggleMenu(false);
+            if(overlay) overlay.onclick = () => toggleMenu(false);
         }
 
-        if(openBtn) openBtn.onclick = () => toggleMenu(true);
-        if(closeBtn) closeBtn.onclick = () => toggleMenu(false);
-        if(overlay) overlay.onclick = () => toggleMenu(false);
-
-        // === 2. INICIALIZACIÓN DE ICONOS LUCIDE ===
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-        }
-
-        // === 3. MENSAJES FLASH (SWEETALERT2) ===
-        {% for label, messages in app.flashes %}
-        {% for message in messages %}
-        Swal.fire({
-            icon: '{{ label == "danger" ? "error" : (label == "warning" ? "warning" : "success") }}',
-            title: '{{ label|capitalize }}',
-            text: '{{ message }}',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 4000,
-            timerProgressBar: true
-        });
-        {% endfor %}
-        {% endfor %}
-
-        // === 4. LÓGICA DEL OJO PARA PASSWORD ===
-        const passwordFields = document.querySelectorAll('input[type="password"]:not(.processed-pwd)');
-        passwordFields.forEach(field => {
+        // === 3. OJO PASSWORD (Mejorado para no romper el layout) ===
+        document.querySelectorAll('input[type="password"]:not(.processed-pwd)').forEach(field => {
             field.classList.add('processed-pwd');
+
+            // Creamos un contenedor relativo para el botón
             const wrapper = document.createElement('div');
-            wrapper.className = 'position-relative flex-grow-1';
+            wrapper.className = 'position-relative w-100';
             field.parentNode.insertBefore(wrapper, field);
             wrapper.appendChild(field);
 
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = 'btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted text-decoration-none pe-4 me-2';
+            btn.className = 'btn btn-link position-absolute end-0 top-50 translate-middle-y text-muted text-decoration-none pe-3';
+            btn.style.zIndex = '10';
             btn.innerHTML = '<i data-lucide="eye" style="width: 18px; height: 18px;"></i>';
-            btn.style.zIndex = '5';
-            btn.style.boxShadow = 'none';
             wrapper.appendChild(btn);
 
-            if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+            lucide.createIcons();
 
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
+            btn.addEventListener('click', () => {
                 const isPassword = field.type === 'password';
                 field.type = isPassword ? 'text' : 'password';
-                btn.innerHTML = isPassword
-                    ? '<i data-lucide="eye-off" style="width: 18px; height: 18px;"></i>'
-                    : '<i data-lucide="eye" style="width: 18px; height: 18px;"></i>';
+                btn.innerHTML = `<i data-lucide="${isPassword ? 'eye-off' : 'eye'}" style="width: 18px; height: 18px;"></i>`;
                 lucide.createIcons();
-                field.focus();
             });
         });
+    }
+
+    // Ejecutar al cargar y en cada navegación de Turbo
+    document.addEventListener("turbo:load", initApp);
+
+    // === 4. MENSAJES FLASH (Separados para que solo salgan una vez) ===
+    document.addEventListener("turbo:render", function() {
+        // Esto limpia los flashes después de mostrarlos en Turbo
     });
+
+    {% for label, messages in app.flashes %}
+    {% for message in messages %}
+    Swal.fire({
+        icon: '{{ label == "danger" ? "error" : (label == "warning" ? "warning" : "success") }}',
+        title: '{{ label|capitalize }}',
+        text: '{{ message|e("js") }}',
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: true
+    });
+    {% endfor %}
+    {% endfor %}
 </script>
 </body>
 </html>

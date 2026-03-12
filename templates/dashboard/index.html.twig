@@ -41,16 +41,32 @@
                     </a>
                 </div>
             {% endif %}
+
             {# TARJETA: RECURSOS (Admin y Personal) #}
             {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_PERSONAL') %}
                 <div class="col-md-4 col-lg-3">
                     <a href="{{ path('app_recurso_index') }}" class="text-decoration-none">
                         <div class="card h-100 shadow-sm border-0 hover-card text-center p-4">
-                            <div class="rounded-circle bg-success bg-opacity-10 p-3 d-inline-block mx-auto mb-3">
+                            <div class="rounded-circle bg-info bg-opacity-10 p-3 d-inline-block mx-auto mb-3">
                                 <i data-lucide="door-open" class="text-info" style="width: 40px; height: 40px;"></i>
                             </div>
                             <h5 class="text-info-emphasis fw-bold">Recursos</h5>
                             <p class="text-muted small">Organiza las aulas y laboratorios del centro.</p>
+                        </div>
+                    </a>
+                </div>
+            {% endif %}
+
+            {# TARJETA: GESTIÓN DE LLAVES (Solo Admin) #}
+            {% if is_granted('ROLE_ADMIN') %}
+                <div class="col-md-4 col-lg-3">
+                    <a href="{{ path('app_llave_index') }}" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm border-0 hover-card text-center p-4">
+                            <div class="rounded-circle bg-light bg-opacity-20 p-3 d-inline-block mx-auto mb-3">
+                                <i data-lucide="key" class="text-light-emphasis" style="width: 40px; height: 40px;"></i>
+                            </div>
+                            <h5 class="text-light-emphasis fw-bold">Llaves</h5>
+                            <p class="text-muted small">Organiza las llaves del centro.</p>
                         </div>
                     </a>
                 </div>
