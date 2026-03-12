@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Listado de Usuarios{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active small text-muted fw-bold">Usuarios</li>
+{% endblock %}
+
+{% block body %}
+    {% embed 'layout/_list_layout.html.twig' %}
+    {% block titulo %}Usuarios{% endblock %}
+    {% block subtitulo %}Gestión de personal y permisos del sistema{% endblock %}
+        {% block ruta_nuevo %}{{ path('app_usuario_new') }}{% endblock %}
+
+        {% block tabla_cabecera %}
+            <th class="ps-4">USUARIO / EMAIL</th>
+            <th>NOMBRE COMPLETO</th>
+            <th>TELÉFONO</th>
+            <th>DEPARTAMENTO</th>
+            <th data-sortable="false">ROLES</th>
+        {% endblock %}
+
+        {% block tabla_cuerpo %}
+            {% for usuario in usuarios %}
+                <tr>
+                    <td class="ps-4">
+                        <div class="fw-bold text-dark">{{ usuario.username }}</div>
+                        <div class="text-muted small">{{ usuario.email }}</div>
+                    </td>
+                    <td>{{ usuario.apellido1 }} {{ usuario.apellido2 }}, {{ usuario.nombre }} </td>
+                    <td>{{ usuario.telefono }}</td>
+                    <td>
+                        {% if usuario.departamento %}
+                            <span class="badge bg-warning text-dark">{{ usuario.departamento.nombre }}</span>
+                        {% else %}
+                            <span class="badge bg-light text-muted">Sin asignar</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% for rol in usuario.roles %}
+                            {% set color = 'bg-secondary' %}
+                            {% set nombre_rol = rol|replace({'ROLE_': ''})|lower|capitalize %}
+
+                            {% if rol == 'ROLE_ADMIN' %}
+                                {% set color = 'bg-dark' %}
+                            {% elseif rol == 'ROLE_USER' %}
+                                {% set color = 'bg-light text-dark border' %}
+                            {% elseif rol == 'ROLE_DOCENTE' %}
+                                {% set color = 'bg-primary' %}
+                            {% endif %}
+
+                            <span class="badge {{ color }} rounded-pill">{{ nombre_rol }}</span>
+                        {% endfor %}
+                    </td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+
+                            {# Botón para enviar email de recuperación #}
+                            <form id="reset-pass-form-{{ usuario.id }}"
+                                  method="post"
+                                  action="{{ path('app_usuario_reset_password_admin', {'id': usuario.id}) }}"
+                                  class="d-inline"
+                                  data-turbo="false">
+                                {# TOKEN DE SEGURIDAD #}
+                                <input type="hidden" name="_token" value="{{ csrf_token('reset-password' ~ usuario.id) }}">
+                                <button type="button"
+                                        class="btn btn-outline-warning btn-sm border-0 shadow-sm btn-action-custom"
+                                        onclick="confirmResetPassword({{ usuario.id }}, '{{ usuario.email }}')"
+                                        data-bs-toggle="tooltip"
+                                        title="Enviar recuperación de contraseña">
+                                    <i data-lucide="mail" class="icon"></i>
+                                </button>
+                            </form>
+
+                            {# Botón para modificar #}
+                            <a href="{{ path('app_usuario_edit', {'id': usuario.id}) }}"
+                            class="btn btn-outline-success btn-sm border-0 shadow-sm btn-action-custom btn-action-custom"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="Editar usuario">
+                            <i data-lucide="pencil" class="icon"></i>
+                            </a>
+
+                            {# Botón para eliminar #}
+                            <form id="delete-form-{{ usuario.id }}" method="post" action="{{ path('app_usuario_delete', {'id': usuario.id}) }}">
+                                {# TOKEN DE SEGURIDAD #}
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ usuario.id) }}">
+                                <button type="button"
+                                        class="btn btn-outline-danger btn-sm shadow-sm border-0"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Eliminar usuario"
+                                        onclick="confirmDelete({{ usuario.id }}, 'El usuario perderá el acceso al sistema.')">
+                                    <i data-lucide="trash-2" class="icon"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4" class="text-center py-4 text-muted">No hay usuarios registrados</td></tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

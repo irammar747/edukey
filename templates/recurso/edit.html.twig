@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Recurso{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('app_recurso_index') }}" class="text-decoration-none d-flex align-items-center text-muted small fw-bold">
+            Recursos
+        </a>
+    </li>
+    <li class="breadcrumb-item active small text-muted fw-bold">Editando Recurso</li>
+{% endblock %}
+
+{% block body %}
+
+    {% embed 'layout/_form_layout.html.twig' with {'form': form} %}
+        {# Usamos el color verde para edición #}
+        {% block form_color %}success{% endblock %}
+
+        {% block form_icon %}pencil{% endblock %}
+        {% block form_title %}Modificar Recurso{% endblock %}
+        {% block btn_text %}Actualizar{% endblock %}
+        {% block ruta_volver %}{{ path('app_recurso_index') }}{% endblock %}
+
+        {% block form_content %}
+            <div class="mb-3">
+                {{ form_row(form.nombre) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(form.descripcion) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(form.tipo) }}
+            </div>
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

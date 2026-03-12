@@ -1,0 +1,25 @@
+{# templates/usuario/new.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuevo Usuario - EduKey{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('app_usuario_index') }}" class="text-decoration-none d-flex align-items-center text-muted small fw-bold">
+            Usuarios
+        </a>
+    </li>
+    <li class="breadcrumb-item active small text-muted fw-bold">Nuevo Usuario</li>
+{% endblock %}
+
+{% block body %}
+    {% embed 'layout/_form_layout.html.twig' %}
+        {% block form_icon %}user-plus{% endblock %}
+        {% block form_title %}Crear Nuevo Usuario{% endblock %}
+        {% block ruta_volver %}{{ path('app_usuario_index') }}{% endblock %}
+
+        {% block form_content %}
+            {{ include('usuario/_form.html.twig', { 'is_edit': false }) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

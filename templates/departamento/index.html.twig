@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Listado de Departamentos{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active small text-muted fw-bold">Departamentos</li>
+{% endblock %}
+
+{% block body %}
+    {% embed 'layout/_list_layout.html.twig' %}
+        {% block titulo %}Departamentos{% endblock %}
+        {% block subtitulo %}Gestión y control de departamentos y áreas{% endblock %}
+        {% block ruta_nuevo %}{{ path('app_departamento_new') }}{% endblock %}
+
+        {% block tabla_cabecera %}
+            <th class="ps-4">NOMBRE</th>
+            <th data-sortable="false">OBSERVACIONES</th>
+        {% endblock %}
+
+        {% block tabla_cuerpo %}
+            {% for departamento in departamentos %}
+                <tr>
+                    <td class="ps-4 fw-bold text-dark">{{ departamento.nombre }}</td>
+                    <td>{{ departamento.observaciones }}</td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            {# Botón para modificar #}
+                            <a href="{{ path('app_departamento_edit', {'id': departamento.id}) }}"
+                               class="btn btn-outline-success btn-sm border-0 shadow-sm btn-action-custom"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               title="Editar Departamento">
+                                <i data-lucide="pencil" class="icon"></i>
+                            </a>
+
+                            {# Botón para eliminar #}
+                            <form id="delete-form-{{ departamento.id }}" method="post" action="{{ path('app_departamento_delete', {'id': departamento.id}) }}">
+                                {# TOKEN DE SEGURIDAD #}
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ departamento.id) }}">
+                                <button type="button"
+                                        class="btn btn-outline-danger btn-sm shadow-sm border-0 btn-action-custom"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Eliminar Departamento"
+                                        onclick="confirmDelete({{ departamento.id }}, 'El departamento será eliminado del sistema.')">
+                                    <i data-lucide="trash-2" class="icon"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3" class="text-center py-4 text-muted">No se encontraron registros</td>
+                </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Al borrar el departamento, los usuarios se quedarán sin asignar.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            })
+        }
+    </script>
+{% endblock %}

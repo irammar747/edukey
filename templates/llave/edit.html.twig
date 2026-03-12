@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Llave - EduKey{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('app_llave_index') }}" class="text-decoration-none d-flex align-items-center text-muted small fw-bold">
+            Llaves
+        </a>
+    </li>
+    <li class="breadcrumb-item active small text-muted fw-bold">Editando Llave</li>
+{% endblock %}
+
+{% block body %}
+    {% embed 'layout/_form_layout.html.twig' %}
+        {% block form_icon %}key{% endblock %}
+        {% block form_color %}success{% endblock %}
+        {% block form_title %}Editar Llave{% endblock %}
+        {% block ruta_volver %}{{ path('app_llave_index') }}{% endblock %}
+
+        {% block form_content %}
+            {{ include('llave/_form.html.twig', { 'is_edit': true }) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
+

@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuevo Departamento - EduKey{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('app_departamento_index') }}" class="text-decoration-none d-flex align-items-center text-muted small fw-bold">
+            Departamentos
+        </a>
+    </li>
+    <li class="breadcrumb-item active small text-muted fw-bold">Nuevo Departamento</li>
+{% endblock %}
+
+{% block body %}
+    {% embed 'layout/_form_layout.html.twig' %}
+        {% block form_icon %}user-plus{% endblock %}
+        {% block form_title %}Crear Nuevo Departamento{% endblock %}
+        {% block ruta_volver %}{{ path('app_departamento_index') }}{% endblock %}
+
+        {% block form_content %}
+            <p class="text-muted small mb-4">Completa los datos del trabajador para darle acceso al sistema.</p>
+
+            {# Renderizamos el formulario. Symfony usará Bootstrap automáticamente #}
+            {{ form_widget(form) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

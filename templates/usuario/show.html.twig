@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mi Perfil - EduKey{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active small text-muted fw-bold">Mi Perfil</li>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow border-0 overflow-hidden">
+                    {# Cabecera con degradado #}
+                    <div class="card-header bg-dark bg-gradient text-white p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary rounded-circle p-3 me-3">
+                                <i data-lucide="user" class="text-white" style="width: 32px; height: 32px;"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0 fw-bold">{{ usuario.nombre }} {{ usuario.apellido1 }}</h3>
+                                <p class="mb-0 opacity-75">@{{ usuario.username }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <div class="row g-4">
+                            {# Columna Izquierda: Info Básica #}
+                            <div class="col-md-6">
+                                <label class="text-muted small fw-bold text-uppercase">Correo Electrónico</label>
+                                <p class="fs-5">{{ usuario.email }}</p>
+
+                                <label class="text-muted small fw-bold text-uppercase">Teléfono</label>
+                                <p class="fs-5">{{ usuario.telefono ?: 'No especificado' }}</p>
+                            </div>
+
+                            {# Columna Derecha: Roles y Dept #}
+                            <div class="col-md-6">
+                                <label class="text-muted small fw-bold text-uppercase">Departamento</label>
+                                <p class="fs-5">
+                                <span class="badge bg-light text-dark border">
+                                    <i data-lucide="building-2" class="me-1" style="width: 14px;"></i>
+                                    {{ usuario.departamento ? usuario.departamento.nombre : 'Sin asignar' }}
+                                </span>
+                                </p>
+
+                                <label class="text-muted small fw-bold text-uppercase">Permisos de Sistema</label>
+                                <div class="mt-1">
+                                    {% for role in usuario.roles %}
+                                        {% set roleName = role|replace({'ROLE_': ''}) %}
+                                        <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3">
+                                        {{ roleName }}
+                                    </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        {# Botones de Acción #}
+                        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                            <div>
+                                <a href="{{ path('app_dashboard') }}" class="btn btn-link text-muted text-decoration-none px-0">
+                                    <i data-lucide="arrow-left" class="me-1" style="width: 18px;"></i> Volver
+                                </a>
+                            </div>
+                            <div class="d-flex gap-2">
+                            <a href="{{ path('app_perfil_edit') }}" class="btn btn-outline-dark px-4 d-flex align-items-center">
+                                <i data-lucide="settings" class="me-2" style="width: 18px;"></i> Editar Perfil
+                            </a>
+                            <a href="{{ path('app_perfil_password') }}" class="btn btn-primary px-4 shadow-sm">
+                                <i data-lucide="key" class="me-2" style="width: 18px;"></i> Cambiar Contraseña
+                            </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

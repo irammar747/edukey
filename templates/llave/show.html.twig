@@ -1,0 +1,106 @@
+{# templates/llave/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Detalle de Llave - EduKey{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('app_llave_index') }}" class="text-decoration-none d-flex align-items-center text-muted small fw-bold">
+            Llaves
+        </a>
+    </li>
+    <li class="breadcrumb-item active small text-muted fw-bold">Datos Llave</li>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 animate__animated animate__fadeIn">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg border-0 overflow-hidden rounded-4">
+
+                    {# Cabecera #}
+                    <div class="card-header bg-dark bg-gradient text-white p-4 border-0">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-light bg-opacity-75 rounded-circle p-3 me-3 shadow-sm">
+                                    <i data-lucide="key" class="text-white" style="width: 32px; height: 32px;"></i>
+                                </div>
+                                <div>
+                                    <h3 class="mb-0 fw-bold">Llave {{ llave.codigo }}</h3>
+                                    <p class="mb-0 opacity-75">Ref: #00{{ llave.id }}</p>
+                                </div>
+                            </div>
+
+                            {# Disponibilidad #}
+                            <div>
+                                {% if llave.disponible %}
+                                    <span class="badge rounded-pill bg-success px-3 py-2 border border-white border-opacity-25 shadow-sm">
+                                    <i data-lucide="check-circle" class="me-1" style="width: 14px;"></i> Disponible
+                                </span>
+                                {% else %}
+                                    <span class="badge rounded-pill bg-danger px-3 py-2 border border-white border-opacity-25 shadow-sm">
+                                    <i data-lucide="x-circle" class="me-1" style="width: 14px;"></i> En Préstamo
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-4 bg-white">
+                        <div class="row g-4">
+                            {# Columna Izquierda: Ubicación y descripción #}
+                            <div class="col-md-6 border-end">
+                                <label class="text-muted small fw-bold text-uppercase d-block mb-1">Ubicación en Centro</label>
+                                <p class="fs-5 mb-4">
+                                    <i data-lucide="map-pin" class="text-secondary me-2" style="width: 18px;"></i>
+                                    {{ llave.ubicacion ?: 'No especificada' }}
+                                </p>
+
+                                <label class="text-muted small fw-bold text-uppercase d-block mb-1">Descripción / Notas</label>
+                                <p class="text-dark">{{ llave.descripcion ?: 'Sin descripción adicional.' }}</p>
+                            </div>
+
+                            {# Columna Derecha: Recursos que abre #}
+                            <div class="col-md-6">
+                                <label class="text-muted small fw-bold text-uppercase d-block mb-2">Dependencias Vinculadas</label>
+                                <div class="d-flex flex-wrap gap-2">
+
+                                    <div class="d-flex flex-column align-items-center gap-1">
+                                        {% for recurso in llave.recursos|slice(0, 3) %} {# Solo mostramos los 3 primeros para no estirar demasiado la tabla #}
+                                            <span class="badge bg-success-subtle text-success border-0 px-2 py-1 fw-medium"
+                                                  style="font-size: 0.9rem; width: 300px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"
+                                                  title="{{ recurso.nombre }}">
+
+                                            {{ recurso.nombre|length > 50 ? recurso.nombre|slice(0, 50) ~ '...' : recurso.nombre }}
+                                        </span>
+                                        {% else %}
+                                            <p class="text-muted small italic">Esta llave no tiene recursos asignados.</p>
+
+                                        {% endfor %}
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4 opacity-25">
+
+                        {# Botones #}
+                        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                            <div>
+                                <a href="{{ path('app_llave_index') }}" class="btn btn-link text-muted text-decoration-none px-0">
+                                    <i data-lucide="arrow-left" class="me-1" style="width: 18px;"></i> Volver al listado
+                                </a>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="{{ path('app_llave_edit', {'id': llave.id}) }}" class="btn btn-outline-dark px-4 d-flex align-items-center rounded-3">
+                                    <i data-lucide="edit-3" class="me-2" style="width: 18px;"></i> Editar Datos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Listado de Recursos{% endblock %}
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active small text-muted fw-bold">Recursos</li>
+{% endblock %}
+{% block body %}
+    {% embed 'layout/_list_layout.html.twig' %}
+    {% block titulo %}Recursos{% endblock %}
+    {% block subtitulo %}Gestión y control de recursos{% endblock %}
+    {% block ruta_nuevo %}{{ path('app_recurso_new') }}{% endblock %}
+
+    {% block tabla_cabecera %}
+        <th class="ps-4">NOMBRE</th>
+        <th data-sortable="false">DESCRIPCIÓN</th>
+        <th>TIPO</th>
+        <th>LLAVES</th>
+    {% endblock %}
+
+        {% block tabla_cuerpo %}
+            {% for recurso in recursos %}
+                <tr>
+                    <td class="ps-4 fw-bold text-dark">{{ recurso.nombre }}</td>
+                    <td>{{ recurso.descripcion }}</td>
+                    <td>{{ recurso.tipo }}</td>
+                    <td>
+                        {% for llave in recurso.llaves %}
+                            <a href="{{ path('app_llave_show', {'id': llave.id}) }}" class="text-decoration-none">
+                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle small me-1">
+                                    <i data-lucide="key" style="width: 12px; height: 12px;"></i>
+                                    {{ llave.codigo }}
+                                </span>
+                            </a>
+                        {% else %}
+                            <span class="text-muted small">Sin llaves</span>
+                        {% endfor %}
+                    </td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            {# Botón Editar #}
+                            <a href="{{ path('app_recurso_edit', {'id': recurso.id}) }}"
+                               class="btn btn-outline-primary btn-sm border-0" title="Editar">
+                                <i data-lucide="pencil" class="text-success" style="width: 18px;"></i>
+                            </a>
+
+                            {# Formulario de Borrado #}
+                            <form id="delete-form-{{ recurso.id }}" method="post" action="{{ path('app_recurso_delete', {'id': recurso.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recurso.id) }}">
+                                <button type="button" class="btn btn-outline-danger btn-sm border-0"
+                                        onclick="confirmDelete({{ recurso.id }}, 'El recurso se eliminará del sistema.')" title="Eliminar">
+                                    <i data-lucide="trash-2" style="width: 18px;"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">No se encontraron registros</td>
+                </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

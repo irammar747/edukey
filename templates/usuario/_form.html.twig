@@ -1,0 +1,156 @@
+{# templates/usuario/_form.html.twig #}
+
+<style>
+    /* Aseguramos que las columnas tengan el mismo comportamiento */
+    .form-group-custom {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Caja de Roles: Se adapta al contenido pero mantiene la estética del input */
+    .roles-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        min-height: 38px; /* Altura mínima para alinear con el input */
+        width: 100%;
+        padding: 1rem 1rem;
+    }
+
+.form-label{
+    padding: 0;
+    margin-bottom: 8px;
+}
+
+    /* Ajuste para que los checks no se amontonen */
+    .form-check {
+        margin-bottom: 0 !important;
+        display: flex;
+        align-items: center;
+        column-gap: 0.5rem;
+        white-space: nowrap; /* Evita que el texto del rol se parta en dos */
+    }
+
+    /* MEDIA QUERY: En móviles, separamos las filas */
+    @media (max-width: 768px) {
+        .roles-container {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+            padding: 0.75rem;
+        }
+    }
+</style>
+
+<p class="text-muted small mb-4">
+    {{ is_edit ? 'Modifica los datos necesarios para actualizar la cuenta.' : 'Completa los datos para dar de alta al nuevo usuario.' }}
+</p>
+
+{# Fila 1: Username y Email #}
+<div class="row">
+    <div class="col-md-6 mb-3">
+        {{ form_row(form.username, {'label': 'Nombre de usuario'}) }}
+    </div>
+    <div class="col-md-6 mb-3">
+        {{ form_row(form.email, {'label': 'Correo electrónico'}) }}
+    </div>
+</div>
+
+{# Fila 2: Nombre y Apellidos #}
+<div class="row">
+    <div class="col-md-4 mb-3">
+        {{ form_row(form.nombre) }}
+    </div>
+    <div class="col-md-4 mb-3">
+        {{ form_row(form.apellido1, {'label': 'Primer apellido'}) }}
+    </div>
+    <div class="col-md-4 mb-3">
+        {{ form_row(form.apellido2, {'label': 'Segundo apellido'}) }}
+    </div>
+</div>
+
+{# Fila 3: Teléfono y Roles alineados a la perfección #}
+<div class="row mb-3 align-items-stretch">
+    {# Columna Teléfono #}
+    <div class="col-lg-4 col-md-5 mb-3 mb-md-0">
+        <div class="form-group-custom">
+            {{ form_label(form.telefono, 'Teléfono', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.telefono, {'attr': {'class': 'form-control', 'placeholder': 'Ej: 600000000'}}) }}
+            {{ form_errors(form.telefono) }}
+        </div>
+    </div>
+
+    {# Columna Roles #}
+    <div class="col-lg-8 col-md-7">
+        <div class="form-group-custom">
+            {{ form_label(form.roles, 'Permisos y Roles', {'label_attr': {'class': 'form-label'}}) }}
+            <div class="roles-container">
+                {% for child in form.roles %}
+                    <div class="form-check me-3">
+                        {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_label(child, null, {'label_attr': {'class': 'form-check-label small ms-2'}}) }}
+                    </div>
+                {% endfor %}
+            </div>
+            {{ form_errors(form.roles) }}
+        </div>
+    </div>
+</div>
+
+{# Fila 4: Departamento con el botón plus (como ya teníamos) #}
+<div class="row">
+    <div class="col-md-12 mb-3">
+        {{ form_label(form.departamento, 'Departamento asignado') }}
+        <div class="input-group">
+            {{ form_widget(form.departamento) }}
+            <button type="button" class="btn btn-outline-secondary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalDepartamento">
+                <i data-lucide="plus" style="width: 18px;"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+{# Incluimos el Modal #}
+{% include 'departamento/_modal_new.html.twig' %}
+
+<script>
+    document.getElementById('btn-ajax-guardar').addEventListener('click', function() {
+        const nombre = document.getElementById('ajax-dep-nombre').value;
+        const desc = document.getElementById('ajax-dep-desc').value;
+
+        if (!nombre) { alert('El nombre es obligatorio'); return; }
+
+        // Enviamos los datos al servidor
+        fetch('{{ path("app_departamento_new_ajax") }}', {
+            method: 'POST',
+            body: JSON.stringify({ nombre: nombre, observaciones: desc }),
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // 1. Buscamos el desplegable de departamentos en el formulario de usuario
+                    const select = document.querySelector('select[name*="[departamento]"]');
+
+                    // 2. Creamos la nueva opción y la seleccionamos
+                    const nuevaOpcion = new Option(data.nombre, data.id, true, true);
+                    select.add(nuevaOpcion);
+
+                    // 3. Cerramos el modal
+                    const modalElement = document.getElementById('modalDepartamento');
+                    const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+                    modalInstance.hide();
+
+                    // 4. Limpiamos el modal
+                    document.getElementById('ajax-dep-nombre').value = '';
+                    document.getElementById('ajax-dep-desc').value = '';
+                }
+            });
+    });
+</script>

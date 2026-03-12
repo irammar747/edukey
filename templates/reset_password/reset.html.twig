@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Establecer Contraseña - EduKey{% endblock %}
+{# Sobrescribimos el header del template base para que no aparezca la barra de navegación #}
+{% block header %}{% endblock %}
+{% block body %}
+    {% embed 'layout/_form_layout.html.twig' with {'form': resetForm} %}
+        {% block form_icon %}lock{% endblock %}
+        {% block form_title %}Establecer nueva contraseña{% endblock %}
+
+        {# Redirigimos al login si cancela, ya que no tiene sesión aún #}
+        {% block ruta_volver %}{{ path('app_login') }}{% endblock %}
+        {% block btn_text %}Guardar contraseña{% endblock %}
+
+        {% block form_content %}
+            <div class="alert alert-info border-0 shadow-sm mb-4">
+                <i data-lucide="shield-check" class="me-2" style="width: 18px;"></i>
+                <small>Por seguridad, elige una contraseña que no uses en otros sitios.</small>
+            </div>
+
+            <div class="row">
+                <div class="col-12 mb-3">
+                    {# Renderizamos los dos campos (password y repetir password) #}
+                    {{ form_row(resetForm.plainPassword.first, {
+                        'label': 'Nueva contraseña',
+                        'attr': {'placeholder': 'Mínimo 6 caracteres'}
+                    }) }}
+                </div>
+                <div class="col-12 mb-3">
+                    {{ form_row(resetForm.plainPassword.second, {
+                        'label': 'Repite la contraseña',
+                        'attr': {'placeholder': 'Confirma tu clave'}
+                    }) }}
+                </div>
+            </div>
+
+            {# Importante para el token CSRF #}
+            {{ form_rest(resetForm) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

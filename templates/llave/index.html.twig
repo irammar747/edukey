@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Listado de Llaves{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active small text-muted fw-bold">Llaves</li>
+{% endblock %}
+
+{% block body %}
+    {% embed 'layout/_list_layout.html.twig' %}
+        {% block titulo %}Llaves{% endblock %}
+        {% block subtitulo %}Gestión y control de llaves{% endblock %}
+        {% block ruta_nuevo %}{{ path('app_llave_new') }}{% endblock %}
+
+        {% block tabla_cabecera %}
+            <th class="ps-4">CÓDIGO</th>
+            <th data-sortable="false"  class="d-none d-lg-table-cell">DESCRIPCIÓN</th>
+            <th class="d-none d-lg-table-cell">UBICACIÓN</th>
+            <th>ACCESO A</th>
+            <th>DISPONIBLE</th>
+        {% endblock %}
+
+        {% block tabla_cuerpo %}
+
+            {% for llave in llaves %}
+                <tr>
+                    <td class="ps-4 fw-bold">
+                        <a href="{{ path('app_llave_show', {'id': llave.id}) }}"
+                           class="text-decoration-none text-dark hover-primary">
+                            {{ llave.codigo }}
+                        </a>
+                    </td>
+                    <td class="d-none d-lg-table-cell">{{ llave.descripcion }}</td>
+                    <td class="d-none d-lg-table-cell">{{ llave.ubicacion }}</td>
+                    <td class="text-center">
+                        <div class="d-flex flex-column align-items-center gap-1">
+                            {% for recurso in llave.recursos|slice(0, 3) %} {# Solo mostramos los 3 primeros para no estirar demasiado la tabla #}
+                                <span class="badge bg-success-subtle text-success border-0 px-2 py-1 fw-medium"
+                                      style="font-size: 0.9rem; width: 200px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"
+                                      title="{{ recurso.nombre }}">
+
+                                    {{ recurso.nombre|length > 30 ? recurso.nombre|slice(0, 30) ~ '...' : recurso.nombre }}
+                                </span>
+                            {% endfor %}
+
+                            {% if llave.recursos.count > 3 %}
+                                <small class="text-muted">+{{ llave.recursos|length - 3 }} más...</small>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        {% if llave.disponible %}
+                            <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-2 d-inline-flex align-items-center">
+                                <i data-lucide="check-circle" class="me-1" style="width: 16px; height: 16px;"></i>
+                                Disponible
+                            </span>
+                        {% else %}
+                            <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 d-inline-flex align-items-center">
+                                <i data-lucide="x-circle" class="me-1" style="width: 16px; height: 16px;"></i>
+                                Prestada
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            {# Botón Ver (Show) #}
+                            <a href="{{ path('app_llave_show', {'id': llave.id}) }}"
+                               class="btn btn-outline-info btn-sm border-0 shadow-sm btn-action-custom"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               title="Ver detalles">
+                                <i data-lucide="eye" class="icon"></i>
+                            </a>
+                            {# Botón para modificar #}
+                            <a href="{{ path('app_llave_edit', {'id': llave.id}) }}"
+                               class="btn btn-outline-success btn-sm border-0 shadow-sm btn-action-custom"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               title="Editar Llave">
+                                <i data-lucide="pencil" class="icon"></i>
+                            </a>
+
+                            {# Botón para eliminar #}
+                            <form id="delete-form-{{ llave.id }}" method="post" action="{{ path('app_llave_delete', {'id': llave.id}) }}">
+                                {# TOKEN DE SEGURIDAD #}
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ llave.id) }}">
+                                <button type="button"
+                                        class="btn btn-outline-danger btn-sm shadow-sm border-0 btn-action-custom"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Eliminar Llave"
+                                        onclick="confirmDelete({{ llave.id }}, 'La llave será eliminada del sistema.')">
+                                    <i data-lucide="trash-2" class="icon"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">No se encontraron registros</td>
+                </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

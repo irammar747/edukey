@@ -1,0 +1,73 @@
+{% block stylesheets %}
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        /* Ajuste para que el buscador se integre con Bootstrap 5 */
+        .ts-control {
+            border: 1px solid #dee2e6 !important;
+            border-radius: 0.375rem !important;
+            padding: 0.5rem 0.75rem !important;
+            box-shadow: none !important;
+        }
+        .ts-control .item {
+            background-color: #0d6efd !important;
+            color: white !important;
+            border-radius: 4px !important;
+        }
+        .ts-dropdown { border-radius: 8px !important; margin-top: 5px !important; }
+    </style>
+{% endblock %}
+
+<p class="text-muted small mb-4">
+    {{ is_edit ? 'Modifica los datos necesarios para actualizar la llave.' : 'Completa los datos para dar de alta la nueva llave.' }}
+</p>
+
+<div class="card-body p-0">
+    <div class="row g-3">
+        {# Renderizamos campo a campo para controlar el diseño #}
+        <div class="col-md-8">
+            {{ form_row(form.codigo, { 'label': 'Código de la Llave' }) }}
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+            <div class="form-check form-switch mb-2">
+                {{ form_widget(form.disponible, { 'attr': {'class': 'form-check-input'} }) }}
+                {{ form_label(form.disponible, '¿Está disponible?', { 'label_attr': {'class': 'form-check-label fw-bold'} }) }}
+            </div>
+        </div>
+
+        <div class="col-12">
+            {{ form_row(form.descripcion, { 'label': 'Descripción / Notas' }) }}
+        </div>
+
+        <div class="col-12">
+            {{ form_row(form.ubicacion, { 'label': 'Ubicación física (ej: Armario B)' }) }}
+        </div>
+
+        <div class="col-12">
+            <label class="form-label fw-bold text-primary">
+                <i data-lucide="door-open" class="me-1" style="width: 16px;"></i> Recursos que abre
+            </label>
+            {{ form_widget(form.recursos) }}
+            <div class="form-text">Puedes seleccionar varios recursos a la vez.</div>
+        </div>
+    </div>
+</div>
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+    <script>
+        document.addEventListener("turbo:load", function() {
+            const select = document.querySelector(".select-recursos");
+            if (select) {
+                if (select.tomselect) {
+                    select.tomselect.destroy();
+                }
+                new TomSelect(select, {
+                    plugins: ['remove_button'],
+                    maxOptions: 50,
+                    placeholder: "Escribe para buscar un aula...",
+                    noResultsText: "No se encontró ningún recurso"
+                });
+            }
+        });
+    </script>
+{% endblock %}

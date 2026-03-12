@@ -1,0 +1,31 @@
+{# templates/usuario/edit.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Modificar Usuario{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('app_usuario_index') }}" class="text-decoration-none d-flex align-items-center text-muted small fw-bold">
+            Usuarios
+        </a>
+    </li>
+    <li class="breadcrumb-item active small text-muted fw-bold">Editando Usuario</li>
+{% endblock %}
+
+{% block body %}
+    {% embed 'layout/_form_layout.html.twig' with {'form': form} %}
+        {% block form_color %}success{% endblock %}
+        {% block form_icon %}user-cog{% endblock %}
+        {% block form_title %}Modificar Usuario: {{ usuario.username }}{% endblock %}
+        {% block btn_text %}Actualizar{% endblock %}
+        {% block ruta_volver %}{{ path('app_usuario_index') }}{% endblock %}
+
+        {% block extra_buttons %}
+            {{ include('usuario/_delete_form.html.twig') }}
+        {% endblock %}
+
+        {% block form_content %}
+            {{ include('usuario/_form.html.twig', { 'is_edit': true }) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
