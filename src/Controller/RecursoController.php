@@ -33,6 +33,8 @@ final class RecursoController extends AbstractController
             $entityManager->persist($recurso);
             $entityManager->flush();
 
+            $this->addFlash('success', '¡Recurso creado con éxito!');
+
             return $this->redirectToRoute('app_recurso_index', [], Response::HTTP_SEE_OTHER);
         }
 

@@ -33,6 +33,8 @@ final class LlaveController extends AbstractController
             $entityManager->persist($llave);
             $entityManager->flush();
 
+            $this->addFlash('success', '¡Llave creada con éxito!');
+
             return $this->redirectToRoute('app_llave_index', [], Response::HTTP_SEE_OTHER);
         }
 

@@ -1,19 +1,19 @@
 /* assets/styles/app.css */
 
 body {
-    /* Usamos !important para obligar a Bootstrap a aceptar nuestro color */
     background-color: #f4f7f6 !important;
     color: #333;
+    overflow-x: hidden;
 }
 
-/* Reglas de la tabla (FUERA de las llaves del body) */
+/* Reglas de la tabla */
 .table td, .table th {
     vertical-align: middle;
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
 
-/* Reglas de la tarjeta (FUERA de las llaves del body) */
+/* Reglas de la tarjeta */
 .card {
     border-radius: 0.75rem;
     border: none !important;
@@ -24,15 +24,15 @@ body {
     font-weight: 800; /* Hace que el título destaque mucho más */
 }
 
-/* Efecto hover en la tabla para que se sienta interactiva */
+/* Efecto hover en la tabla */
 .table-hover tbody tr:hover {
     background-color: rgba(0, 123, 255, 0.03) !important;
     transition: background-color 0.2s ease;
 }
-/* Esto obliga a las celdas de la cabecera a ser oscuras */
+/* cabecera de la tabla */
 .cabecera-personalizada th {
-    background-color: #2e3236 !important; /* Negro casi puro */
-    color: #ffffff !important;           /* Texto blanco */
+    background-color: #53575a !important;
+    color: #ffffff !important;
     border-bottom: none !important;
     padding-top: 15px !important;
     padding-bottom: 15px !important;
@@ -44,4 +44,131 @@ body {
 .card.overflow-hidden {
     overflow: hidden;
     border-radius: 12px;
+}
+
+/* NAVBAR SUPERIOR */
+.navbar {
+    z-index: 1050;
+    height: 56px;
+    position: relative;
+}
+
+/* Botón de menú a la izquierda del */
+#menuBtnContainer {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1100;
+    transition: opacity 0.2s ease, visibility 0.2s;
+}
+
+#menuBtnContainer.hidden {
+    visibility: hidden;
+    opacity: 0;
+}
+
+/* SIDEBAR (Escondido por defecto) */
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    z-index: 1200;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#sidebar.active {
+    left: 0;
+}
+
+/* Capa oscura de fondo */
+#overlay {
+    display: none;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1150;
+    top: 0;
+    left: 0;
+}
+#overlay.active { display: block; }
+
+/* 2. El Sidebar */
+nav#sidebar {
+    min-width: 250px !important;
+    max-width: 250px !important;
+    height: 100vh !important;
+    position: fixed !important; /* CRÍTICO: Para que flote */
+    top: 0 !important;
+    left: -250px !important; /* Escondido por defecto */
+    z-index: 1200 !important;
+    background-color: #212529 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* 3. Cuando el sidebar está activo */
+nav#sidebar.active {
+    left: 0 !important;
+}
+
+/* 4. Los enlaces interiores */
+.sidebar-link {
+    padding: 15px 25px;
+    display: flex !important;
+    align-items: center;
+    text-decoration: none;
+    color: rgba(255,255,255,.8);
+    transition: 0.2s;
+    width: 100%; /* Para que se apilen uno debajo de otro */
+}
+
+.sidebar-link:hover {
+    background: rgba(255,255,255,.1);
+    color: #fff;
+}
+
+/* Contenedor principal de las migas */
+.breadcrumb {
+    display: flex;
+    align-items: center; /* Alineación vertical centrada */
+    gap: 0;
+    margin-bottom: 1.5rem;
+}
+
+/* Cada elemento (Dashboard, Recursos, etc) */
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    color: #0e0e0e !important;
+    font-weight: bold; /* Para que resalte más */
+}
+
+/* Separador personalizado */
+.breadcrumb-item + .breadcrumb-item::before {
+    display: flex;
+    align-items: center;
+    content: "/";
+    padding: 0 5px;
+    color: #7c8388;
+    font-size: 1.1rem;
+    font-weight: 300;
+    transform: translateY(-1px);
+}
+
+/* Ajuste para el icono de Lucide */
+.breadcrumb-item i {
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: -2px;
+}
+.breadcrumb-item.active {
+    color: #878d8f !important;
+    font-weight: normal;
 }
