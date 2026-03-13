@@ -1,0 +1,110 @@
+{# templates/llave/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Detalle de Tipo Alerta - EduKey{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('app_tipo_alerta_index') }}"
+           class="text-decoration-none d-flex align-items-center text-muted small fw-bold">
+            Tipos de Alerta
+        </a>
+    </li>
+    <li class="breadcrumb-item active small text-muted fw-bold">Detalle Tipo Alerta</li>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 animate__animated animate__fadeIn">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg border-0 overflow-hidden rounded-4">
+
+                    {# Cabecera #}
+                    <div class="card-header bg-dark bg-opacity-50 bg-gradient text-white p-4 border-0">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-danger bg-opacity-75 rounded-circle p-3 me-3 shadow-sm">
+                                    <i data-lucide="megaphone" class="text-white"
+                                       style="width: 32px; height: 32px;"></i>
+                                </div>
+                                <div>
+                                    <h3 class="mb-0 fw-bold">Tipo de Alerta</h3>
+                                    <p class="mb-0 opacity-75">Ref: #00{{ tipo_alertum.id }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-4 bg-white">
+                        <div class="row g-4">
+                            {# Columna Izquierda: Ubicación y descripción #}
+                            <div class="col-md-6 border-end">
+                                <label class="text-muted small fw-bold text-uppercase d-block mb-1">Gravedad</label>
+                                {% if tipo_alertum.gravedad == 'Baja' %}
+                                    <span class="text-info">
+                                <i data-lucide="info" class="me-1" style="width: 14px;"></i>
+                                Baja
+                            </span>
+                                {% elseif tipo_alertum.gravedad == 'Media' %}
+                                    <span class="text-warning">
+                                <i data-lucide="alert-circle" class="me-1" style="width: 14px;"></i>
+                                Media
+                            </span>
+                                {% elseif tipo_alertum.gravedad == 'Alta' %}
+                                    <span class="text-danger">
+                                <i data-lucide="alert-triangle" class="me-1" style="width: 14px;"></i>
+                                Alta
+                            </span>
+                                {% elseif tipo_alertum.gravedad == 'Crítica' %}
+                                    <span class="text-dark">
+                                <i data-lucide="zap" class="me-1" style="width: 14px;"></i>
+                                Crítica
+                            </span>
+                                {% else %}
+                                    {{ tipo_alertum.gravedad }}
+                                {% endif %}
+                                <label class="text-muted small fw-bold text-uppercase d-block mt-3 mb-1">Nombre</label>
+                                <p class="fs-5 mb-4">
+                                    {{ tipo_alertum.nombre ?: 'No especificada' }}
+                                </p>
+
+                                <label
+                                    class="text-muted small fw-bold text-uppercase d-block mb-1">Consecuencias</label>
+                                <p class="text-dark">{{ tipo_alertum.consecuencia ?: 'Sin descripción adicional.' }}</p>
+                            </div>
+
+                            {# Columna Derecha: Recursos que abre #}
+                            <div class="col-md-6">
+                                <label class="text-muted small fw-bold text-uppercase d-block mb-2">Mensaje</label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <div class="d-flex flex-column align-items-center gap-1">
+                                        <p class="text-dark">{{ tipo_alertum.mensaje ?: 'Sin descripción adicional.' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4 opacity-25">
+
+                        {# Botones #}
+                        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                            <div>
+                                <a href="{{ path('app_tipo_alerta_index') }}"
+                                   class="btn btn-link text-muted text-decoration-none px-0">
+                                    <i data-lucide="arrow-left" class="me-1" style="width: 18px;"></i> Volver al listado
+                                </a>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="{{ path('app_tipo_alerta_edit', {'id': tipo_alertum.id}) }}"
+                                   class="btn btn-outline-dark px-4 d-flex align-items-center rounded-3">
+                                    <i data-lucide="edit-3" class="me-2" style="width: 18px;"></i> Editar Datos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

@@ -1,0 +1,84 @@
+{# templates/tipo_alerta/_form.html.twig #}
+
+<style>
+    .form-group-custom { display: flex; flex-direction: column; }
+    .form-label { font-weight: bold; color: #444; margin-bottom: 8px; }
+
+    /* Contenedor de gravedad estilo botones de selección */
+    .gravedad-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        padding: 1rem;
+        width: 100%;
+    }
+
+    .form-check {
+        padding-left: 1.5rem;
+        margin-bottom: 0;
+    }
+
+    /* Colores por nivel para ayudar visualmente */
+    .check-baja label { color: #0dcaf0; }
+    .check-media label { color: #fd7e14; }
+    .check-alta label { color: #dc3545; }
+    .check-critica label { color: #212529; font-weight: 800; }
+</style>
+
+<p class="text-muted small mb-4">
+    {{ is_edit ? 'Modifica los parámetros del tipo de alerta existente.' : 'Define un nuevo tipo de alerta y su nivel de criticidad.' }}
+</p>
+
+
+
+{# Fila 1: Nombre y Consecuencia #}
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <div class="form-group-custom">
+            {{ form_label(form.nombre, 'Nombre del tipo') }}
+            {{ form_widget(form.nombre, {'attr': {'class': 'form-control', 'placeholder': 'Ej: Intrusión detectada'}}) }}
+            {{ form_errors(form.nombre) }}
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="form-group-custom">
+            {{ form_label(form.consecuencia, 'Consecuencia del sistema') }}
+            {{ form_widget(form.consecuencia, {'attr': {'class': 'form-control', 'placeholder': 'Ej: Bloqueo de llaves'}}) }}
+            {{ form_errors(form.consecuencia) }}
+        </div>
+    </div>
+</div>
+
+{# Fila 2: El Mensaje de la alerta (Textarea) #}
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="form-group-custom">
+            {{ form_label(form.mensaje, 'Mensaje predeterminado') }}
+            {{ form_widget(form.mensaje, {'attr': {'class': 'form-control', 'rows': '2', 'placeholder': 'Texto que se mostrará en la alerta...'}}) }}
+            {{ form_errors(form.mensaje) }}
+        </div>
+    </div>
+</div>
+
+{# Fila 3: Gravedad (Estilo similar a los Roles de usuario) #}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="form-group-custom">
+            <label class="form-label">Nivel de Gravedad</label>
+            <div class="gravedad-container">
+                {% for child in form.gravedad %}
+                    <div class="form-check check-{{ child.vars.value|lower }}">
+                        {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_label(child, null, {'label_attr': {'class': 'form-check-label small ms-1'}}) }}
+                    </div>
+                {% endfor %}
+            </div>
+            {{ form_errors(form.gravedad) }}
+        </div>
+    </div>
+</div>
+
+

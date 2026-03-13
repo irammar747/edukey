@@ -1,0 +1,27 @@
+{# templates/tipo_alerta/new.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuevo Tipo de Alerta - EduKey{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('app_tipo_alerta_index') }}" class="text-decoration-none d-flex align-items-center text-muted small fw-bold">
+            Tipos de Alerta
+        </a>
+    </li>
+    <li class="breadcrumb-item active small text-muted fw-bold">Nuevo Tipo</li>
+{% endblock %}
+
+{% block body %}
+    {% embed 'layout/_form_layout.html.twig' %}
+        {% block form_icon %}megaphone{% endblock %}
+
+        {% block form_title %}Configurar Nuevo Tipo de Alerta{% endblock %}
+
+        {% block ruta_volver %}{{ path('app_tipo_alerta_index') }}{% endblock %}
+
+        {% block form_content %}
+            {{ include('tipo_alerta/_form.html.twig', { 'is_edit': false }) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

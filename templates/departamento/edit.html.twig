@@ -1,3 +1,4 @@
+{# templates/departamento/edit.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Editar Departamento{% endblock %}
@@ -12,23 +13,13 @@
 {% endblock %}
 
 {% block body %}
-    {% embed 'layout/_form_layout.html.twig' with {'form': form} %}
-        {# Usamos el color verde para edición #}
-        {% block form_color %}success{% endblock %}
-
+    {% embed 'layout/_form_layout.html.twig' %}
         {% block form_icon %}pencil{% endblock %}
         {% block form_title %}Modificar Departamento{% endblock %}
-        {% block btn_text %}Actualizar{% endblock %}
         {% block ruta_volver %}{{ path('app_departamento_index') }}{% endblock %}
 
         {% block form_content %}
-            <div class="mb-3">
-                {{ form_row(form.nombre) }}
-            </div>
-            <div class="mb-3">
-                {{ form_row(form.observaciones) }}
-            </div>
+            {{ include('departamento/_form.html.twig', { 'is_edit': true }) }}
         {% endblock %}
-
     {% endembed %}
 {% endblock %}

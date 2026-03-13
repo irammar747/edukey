@@ -1,3 +1,4 @@
+{# templates/departamento/new.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Nuevo Departamento - EduKey{% endblock %}
@@ -13,15 +14,17 @@
 
 {% block body %}
     {% embed 'layout/_form_layout.html.twig' %}
-        {% block form_icon %}user-plus{% endblock %}
-        {% block form_title %}Crear Nuevo Departamento{% endblock %}
-        {% block ruta_volver %}{{ path('app_departamento_index') }}{% endblock %}
+    {# Icono de edificio o grupo para representar un departamento #}
+    {% block form_icon %}building-2{% endblock %}
+
+    {% block form_title %}Crear Nuevo Departamento{% endblock %}
+
+    {# Definimos la ruta de retorno #}
+    {% block ruta_volver %}{{ path('app_departamento_index') }}{% endblock %}
 
         {% block form_content %}
-            <p class="text-muted small mb-4">Completa los datos del trabajador para darle acceso al sistema.</p>
-
-            {# Renderizamos el formulario. Symfony usará Bootstrap automáticamente #}
-            {{ form_widget(form) }}
+            {# Llamamos al formulario compartido pasando is_edit como false #}
+            {{ include('departamento/_form.html.twig', { 'is_edit': false }) }}
         {% endblock %}
     {% endembed %}
 {% endblock %}

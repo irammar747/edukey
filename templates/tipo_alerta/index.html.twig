@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tipos de Alertas - Edukey{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active small text-muted fw-bold">Llaves</li>
+{% endblock %}
+
+{% block body %}
+    {% embed 'layout/_list_layout.html.twig' %}
+        {% block titulo %}Tipos de Alertas{% endblock %}
+        {% block subtitulo %}Gestión de Tipos de Alertas{% endblock %}
+        {% block ruta_nuevo %}{{ path('app_tipo_alerta_new') }}{% endblock %}
+
+        {% block tabla_cabecera %}
+            <th class="ps-4">NOMBRE</th>
+            <th data-sortable="false" class="d-none d-lg-table-cell">CONSECUENCIA</th>
+            <th>GRAVEDAD</th>
+        {% endblock %}
+
+        {% block tabla_cuerpo %}
+
+            {% for tipo in tipo_alertas %}
+                <tr>
+                    <td class="ps-4 fw-bold">
+                        <a href="{{ path('app_tipo_alerta_show', {'id': tipo.id}) }}"
+                           class="text-decoration-none text-dark hover-primary">
+                            {{ tipo.nombre }}
+                        </a>
+                    </td>
+                    <td class="d-none d-lg-table-cell">{{ tipo.consecuencia }}</td>
+                    <td class="fw-bold text-center">
+                        {% if tipo.gravedad == 'Baja' %}
+                            <span class="text-info">
+                                <i data-lucide="info" class="me-1" style="width: 14px;"></i>
+                                Baja
+                            </span>
+                        {% elseif tipo.gravedad == 'Media' %}
+                            <span class="text-warning">
+                                <i data-lucide="alert-circle" class="me-1" style="width: 14px;"></i>
+                                Media
+                            </span>
+                        {% elseif tipo.gravedad == 'Alta' %}
+                            <span class="text-danger">
+                                <i data-lucide="alert-triangle" class="me-1" style="width: 14px;"></i>
+                                Alta
+                            </span>
+                        {% elseif tipo.gravedad == 'Crítica' %}
+                            <span class="text-dark">
+                                <i data-lucide="zap" class="me-1" style="width: 14px;"></i>
+                                Crítica
+                            </span>
+                        {% else %}
+                            {{ tipo.gravedad }}
+                        {% endif %}
+                    </td>
+
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            {# Botón Ver (Show) #}
+                            <a href="{{ path('app_tipo_alerta_show', {'id': tipo.id}) }}"
+                               class="btn btn-outline-info btn-sm border-0 shadow-sm btn-action-custom"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               title="Ver detalles">
+                                <i data-lucide="eye" class="icon"></i>
+                            </a>
+                            {# Botón para modificar #}
+                            <a href="{{ path('app_tipo_alerta_edit', {'id': tipo.id}) }}"
+                               class="btn btn-outline-success btn-sm border-0 shadow-sm btn-action-custom"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               title="Editar">
+                                <i data-lucide="pencil" class="icon"></i>
+                            </a>
+
+                            {# Botón para eliminar #}
+                            <form id="delete-form-{{ tipo.id }}" method="post"
+                                  action="{{ path('app_tipo_alerta_delete', {'id': tipo.id}) }}">
+                                {# TOKEN DE SEGURIDAD #}
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ tipo.id) }}">
+                                <button type="button"
+                                        class="btn btn-outline-danger btn-sm shadow-sm border-0 btn-action-custom"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Eliminar"
+                                        onclick="confirmDelete({{ tipo.id }}, 'El tipo de alerta será eliminado del sistema.')">
+                                    <i data-lucide="trash-2" class="icon"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">No se encontraron registros</td>
+                </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}

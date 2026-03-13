@@ -1,6 +1,22 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-<button class="btn btn-success mt-3">
-    <i class="fa fa-save"></i> {{ button_label|default('Guardar') }}
-</button>
-{{ form_end(form) }}
+{# templates/departamento/_form.html.twig #}
+
+<p class="text-muted small mb-4">
+    {{ is_edit ? 'Modifica la información del departamento seleccionado.' : 'Introduce los datos para registrar un nuevo departamento en el centro.' }}
+</p>
+
+<div class="row">
+    <div class="col-md-12 mb-3">
+        {{ form_label(form.nombre, 'Nombre del Departamento', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+        {{ form_widget(form.nombre, {'attr': {'class': 'form-control', 'placeholder': 'Ej: Matemáticas, Extraescolares...'}}) }}
+        {{ form_errors(form.nombre) }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 mb-3">
+        {{ form_label(form.observaciones, 'Observaciones / Descripción', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+        {{ form_widget(form.observaciones, {'attr': {'class': 'form-control', 'rows': '3', 'placeholder': 'Información adicional...'}}) }}
+        {{ form_errors(form.observaciones) }}
+    </div>
+</div>
+
