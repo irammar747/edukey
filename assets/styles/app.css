@@ -13,6 +13,18 @@ body {
     padding-bottom: 1rem;
 }
 
+/* Sobrescribimos el estilo de Simple-DataTables */
+.datatable-table > tbody > tr > td {
+    vertical-align: middle !important;
+    padding: 12px 10px !important;
+}
+
+.datatable-table > thead > tr > th {
+    vertical-align: middle !important;
+}
+
+
+
 /* Reglas de la tarjeta */
 .card {
     border-radius: 0.75rem;
@@ -53,7 +65,7 @@ body {
     position: relative;
 }
 
-/* Botón de menú a la izquierda del */
+/* Botón de menú a la izquierda */
 #menuBtnContainer {
     position: absolute;
     left: 20px;
@@ -103,10 +115,10 @@ nav#sidebar {
     max-width: 250px !important;
     height: 100vh !important;
     position: fixed !important; /* CRÍTICO: Para que flote */
+    background-color: #858383 !important;
     top: 0 !important;
     left: -250px !important; /* Escondido por defecto */
     z-index: 1200 !important;
-    background-color: #212529 !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex !important;
     flex-direction: column !important;
@@ -171,4 +183,92 @@ nav#sidebar.active {
 .breadcrumb-item.active {
     color: #878d8f !important;
     font-weight: normal;
+}
+
+/* Clase personalizada para el botón de préstamo */
+.btn.btn-outline-prestamo {
+    color: #5A308A !important;
+    background-color: transparent !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease !important;
+}
+
+/* El estado HOVER */
+.btn.btn-outline-prestamo:hover {
+    background-color: #5A308A !important;
+    color: #ffffff !important;
+}
+
+/* Selector para el ICONO (i y svg) dentro del botón en HOVER */
+.btn.btn-outline-prestamo:hover i,
+.btn.btn-outline-prestamo:hover svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important; /* Lucide usa stroke para el color */
+}
+
+/* Color inicial del icono si no lo pones por inline style */
+.btn-outline-prestamo i,
+.btn-outline-prestamo svg {
+    color: #5A308A;
+    stroke: #5A308A;
+}
+
+/* Clase personalizada para el botón de devolver */
+.btn.btn-outline-devolver {
+    color: #ffffff !important;
+    background-color: #5A308A !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease !important;
+}
+
+/* El estado HOVER */
+.btn.btn-outline-devolver:hover {
+    background-color: #ffffff !important;
+    color: #5A308A !important;
+}
+
+/* Selector para el ICONO (i y svg) dentro del botón en HOVER */
+.btn.btn-outline-devolver:hover i,
+.btn.btn-outline-devolver:hover svg {
+    color: #5A308A !important;
+    stroke: #5A308A !important; /* Lucide usa stroke para el color */
+}
+
+/* Color inicial del icono si no lo pones por inline style */
+.btn-outline-devolver i,
+.btn-outline-devolver svg {
+    color: #ffffff;
+    stroke: #ffffff;
+}
+
+/* Ajuste para que TomSelect parezca un input nativo de Bootstrap 5 */
+.ts-wrapper.form-control {
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+}
+
+.ts-control {
+    border: 1px solid #dee2e6 !important;
+    border-radius: 0.5rem !important; /* Bordes más suaves */
+    padding: 0.6rem 0.75rem !important;
+    min-height: 45px !important; /* Altura cómoda */
+}
+
+.ts-control:focus {
+    border-color: #5A308A !important; /* Tu color morado */
+    box-shadow: 0 0 0 0.25rem rgba(90, 48, 138, 0.1) !important;
+}
+
+/* Estilo para los labels con icono */
+.form-label-custom {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
 }

@@ -15,7 +15,6 @@
         {% block tabla_cabecera %}
             <th class="ps-4">USUARIO / EMAIL</th>
             <th>NOMBRE COMPLETO</th>
-            <th>TELÉFONO</th>
             <th>DEPARTAMENTO</th>
             <th data-sortable="false">ROLES</th>
         {% endblock %}
@@ -28,7 +27,6 @@
                         <div class="text-muted small">{{ usuario.email }}</div>
                     </td>
                     <td>{{ usuario.apellido1 }} {{ usuario.apellido2 }}, {{ usuario.nombre }} </td>
-                    <td>{{ usuario.telefono }}</td>
                     <td>
                         {% if usuario.departamento %}
                             <span class="badge bg-warning text-dark">{{ usuario.departamento.nombre }}</span>
@@ -54,7 +52,14 @@
                     </td>
                     <td class="text-center">
                         <div class="d-flex justify-content-center gap-2">
-
+                            {# Botón Ver (Show) #}
+                            <a href="{{ path('app_usuario_show', {'id': usuario.id}) }}"
+                               class="btn btn-outline-info btn-sm border-0 shadow-sm btn-action-custom"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               title="Ver detalles">
+                                <i data-lucide="eye" class="icon"></i>
+                            </a>
                             {# Botón para enviar email de recuperación #}
                             <form id="reset-pass-form-{{ usuario.id }}"
                                   method="post"

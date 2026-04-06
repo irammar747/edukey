@@ -24,7 +24,7 @@
 
             {% for llave in llaves %}
                 <tr>
-                    <td class="ps-4 fw-bold">
+                    <td class="d-none d-lg-table-cell fw-bold centrado">
                         <a href="{{ path('app_llave_show', {'id': llave.id}) }}"
                            class="text-decoration-none text-dark hover-primary">
                             {{ llave.codigo }}
@@ -63,6 +63,25 @@
                     </td>
                     <td class="text-center">
                         <div class="d-flex justify-content-center gap-2">
+                            {# --- BOTÓN DE PRÉSTAMO/DEVOLUCIÓN RÁPIDO --- #}
+                            {% if llave.disponible %}
+                                {# BOTÓN PRESTAR #}
+                                <a href="{{ path('app_prestamo_new', {'llave': llave.id}) }}"
+                                   class="btn btn-sm btn-outline-prestamo border-0 shadow-sm btn-action-custom"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="Realizar Préstamo">
+                                    <i data-lucide="arrow-left-right" class="icon"></i>
+                                </a>
+                                {% else %}
+                                    {# BOTÓN DEVOLVER #}
+                                    <a href="{{ path('app_prestamo_devolver', {'llave': llave.id}) }}"
+                                       class="btn btn-sm btn-outline-devolver border-0 shadow-sm btn-action-custom"
+                                       data-bs-toggle="tooltip"
+                                       title="Registrar Devolución">
+                                        <i data-lucide="undo-2" class="icon"></i>
+                                    </a>
+                            {% endif %}
                             {# Botón Ver (Show) #}
                             <a href="{{ path('app_llave_show', {'id': llave.id}) }}"
                                class="btn btn-outline-info btn-sm border-0 shadow-sm btn-action-custom"
@@ -89,7 +108,8 @@
                                         data-bs-toggle="tooltip"
                                         data-bs-placement="top"
                                         title="Eliminar Llave"
-                                        onclick="confirmDelete({{ llave.id }}, 'La llave será eliminada del sistema.')">
+                                        {# Le pasamos tanto el id de la llave como el número de préstamos asociados a la llave #}
+                                        onclick="confirmDelete({{ llave.id }}, 'La llave será eliminada del sistema.', {{ llave.prestamos|length }})">
                                     <i data-lucide="trash-2" class="icon"></i>
                                 </button>
                             </form>

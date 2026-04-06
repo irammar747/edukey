@@ -4,6 +4,8 @@ framework:
         paths:
             - assets/
         missing_import_mode: strict
+        # Esto desactiva la precarga automática que causa avisos
+        importmap_polyfill: false
 
 when@prod:
     framework:

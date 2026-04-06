@@ -6,8 +6,13 @@ use App\Repository\PrestamoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PrestamoRepository::class)]
+#[Assert\Expression(
+    "this.getTiempoLim() == null or this.getTiempoLim() > this.getFPrest()",
+    message: "Si estableces un límite, debe ser posterior a la fecha de préstamo."
+)]
 class Prestamo
 {
     #[ORM\Id]

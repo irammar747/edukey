@@ -12,7 +12,7 @@
             <div class="col-lg-8">
                 <div class="card shadow border-0 overflow-hidden">
                     {# Cabecera con degradado #}
-                    <div class="card-header bg-dark bg-gradient text-white p-4">
+                    <div class="card-header bg-dark bg-opacity-50 bg-gradient text-white p-4">
                         <div class="d-flex align-items-center">
                             <div class="bg-primary rounded-circle p-3 me-3">
                                 <i data-lucide="user" class="text-white" style="width: 32px; height: 32px;"></i>
@@ -27,12 +27,12 @@
                     <div class="card-body p-4">
                         <div class="row g-4">
                             {# Columna Izquierda: Info Básica #}
-                            <div class="col-md-6">
+                            <div class="col-md-6  border-end">
                                 <label class="text-muted small fw-bold text-uppercase">Correo Electrónico</label>
                                 <p class="fs-5">{{ usuario.email }}</p>
 
                                 <label class="text-muted small fw-bold text-uppercase">Teléfono</label>
-                                <p class="fs-5">{{ usuario.telefono ?: 'No especificado' }}</p>
+                                <p>{{ usuario.telefono ?: 'No especificado' }}</p>
                             </div>
 
                             {# Columna Derecha: Roles y Dept #}

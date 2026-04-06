@@ -92,7 +92,7 @@ final class DepartamentoController extends AbstractController
     public function delete(Request $request, Departamento $departamento, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$departamento->getId(), $request->getPayload()->getString('_token'))) {
-            // PASO EXTRA: Buscamos los usuarios de este departamento y los ponemos a null
+            // Buscamos los usuarios de este departamento y los ponemos a null
             foreach ($departamento->getUsuarios() as $usuario) {
                 $usuario->setDepartamento(null);
             }

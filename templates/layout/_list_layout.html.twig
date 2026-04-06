@@ -113,11 +113,22 @@
 
 <script>
     // 1. Registro global de las funciones para que Turbo no las pierda
-    window.confirmDelete = function(id, text = "Este registro se eliminará permanentemente.") {
+    window.confirmDelete = function(id, text = "Este registro se eliminará permanentemente.", numRelaciones = 0) {
+        let titulo = '¿Estás seguro?';
+        let texto = text;
+        let icono = 'warning';
+
+        // Si detectamos que hay elementos que dependen de este por FK relacionadas
+        if (numRelaciones > 0) {
+            titulo = '¡Atención: Registros vinculados!';
+            texto = `Existen ${numRelaciones} préstamos asociados. Si continúas, se borrará TODO el historial relacionado permanentemente.`;
+            icono = 'error';
+        }
+
         Swal.fire({
-            title: '¿Estás seguro?',
-            text: text,
-            icon: 'warning',
+            title: titulo,
+            text: texto,
+            icon: icono,
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#6e7881',

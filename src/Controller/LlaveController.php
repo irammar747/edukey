@@ -74,6 +74,12 @@ final class LlaveController extends AbstractController
     public function delete(Request $request, Llave $llave, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$llave->getId(), $request->getPayload()->getString('_token'))) {
+
+            // 1. Borramos los préstamos asociados a la llave
+            foreach ($llave->getPrestamos() as $prestamo) {
+                $entityManager->remove($prestamo);
+            }
+
             $entityManager->remove($llave);
             $entityManager->flush();
         }
