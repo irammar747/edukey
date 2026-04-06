@@ -1,0 +1,164 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Detalle del Préstamo - EduKey{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('app_prestamo_index') }}" class="text-decoration-none d-flex align-items-center text-muted small fw-bold">
+            Préstamos
+        </a>
+    </li>
+    <li class="breadcrumb-item active small text-muted fw-bold">Detalles del Registro</li>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 animate__animated animate__fadeIn">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="card shadow-lg border-0 overflow-hidden rounded-4">
+
+                    {# Cabecera Dinámica #}
+                    {% set esFinalizado = prestamo.fDevo is not null %}
+                    <div class="card-header bg-dark bg-gradient text-white p-4 border-0">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+
+                                <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow-sm me-3" style="width: 64px; height: 64px;">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                         style="background-color: rgba(90, 48, 138, 0.3);width: 64px; height: 64px;">
+                                        <i data-lucide="arrow-left-right" style="color: #5A308A; width: 28px; height: 28px;"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="mb-0 fw-bold">Préstamo #{{ prestamo.id }}</h3>
+                                    <p class="mb-0 opacity-75">
+                                        Llave: <strong>{{ prestamo.llave.codigo }}</strong>
+                                    </p>
+                                </div>
+                            </div>
+
+                            {# Estado del Préstamo #}
+                            <div>
+                                {% if esFinalizado %}
+                                    <span class="badge rounded-pill bg-white text-success px-3 py-2 border-0 shadow-sm">
+                                        <i data-lucide="check-circle" class="me-1" style="width: 14px;"></i> Devuelta
+                                    </span>
+                                {% else %}
+                                    <span class="badge rounded-pill bg-white text-danger px-3 py-2 border-0 shadow-sm animate__animated animate__pulse animate__infinite">
+                                        <i data-lucide="clock" class="me-1" style="width: 14px;"></i> Prestada
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-4 bg-white">
+                        <div class="row g-4">
+                            {# Columna 1: Actores del préstamo #}
+                            <div class="col-md-6 border-end">
+                                <div class="mb-4">
+                                    <label class="text-muted small fw-bold text-uppercase d-block mb-1">Docente / Solicitante</label>
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light rounded p-2 me-2">
+                                            <i data-lucide="user" class="text-secondary" style="width: 20px;"></i>
+                                        </div>
+                                        <span class="fs-5 fw-medium">{{ prestamo.docente.nombre ?: 'No especificado' }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="text-muted small fw-bold text-uppercase d-block mb-1">Personal Responsable</label>
+                                    <p class="text-dark small">
+                                        <i data-lucide="shield-check" class="text-muted me-1" style="width: 16px;"></i>
+                                        Gestionado por: {{ prestamo.personal.nombre ?: 'Admin' }}
+                                    </p>
+                                </div>
+
+                                <label class="text-muted small fw-bold text-uppercase d-block mb-1">Observaciones</label>
+                                <p class="text-dark italic bg-light p-3 rounded border-start border-4">
+                                    {{ prestamo.observaciones ?: 'Sin anotaciones adicionales.' }}
+                                </p>
+                            </div>
+
+                            {# Columna 2: Tiempos y Fechas #}
+                            <div class="col-md-6">
+                                <label class="text-muted small fw-bold text-uppercase d-block mb-3">Cronología del Préstamo</label>
+
+                                <div class="d-flex flex-column gap-3">
+                                    {# Fecha Salida #}
+                                    <div class="d-flex align-items-center">
+                                        <div class="p-2 bg-primary-subtle rounded me-3">
+                                            <i data-lucide="calendar-range" class="text-primary" style="width: 18px;"></i>
+                                        </div>
+                                        <div>
+                                            <span class="d-block small text-muted">Fecha de Salida</span>
+                                            <span class="fw-bold">{{ prestamo.fPrest|date('d/m/Y H:i') }}</span>
+                                        </div>
+                                    </div>
+
+                                    {# Fecha Límite #}
+                                    <div class="d-flex align-items-center">
+                                        <div class="p-2 bg-warning-subtle rounded me-3">
+                                            <i data-lucide="timer" class="text-warning" style="width: 18px;"></i>
+                                        </div>
+                                        <div>
+                                            <span class="d-block small text-muted">Devolución Prevista</span>
+                                            <span class="fw-bold">
+                                                {% if prestamo.tiempoLim %}
+                                                    {{ prestamo.tiempoLim|date('d/m/Y H:i') }}
+                                                {% else %}
+                                                    <span class="badge bg-info-subtle text-info fw-normal">Sin límite</span>
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {# Fecha Devolución Real #}
+                                    <div class="d-flex align-items-center">
+                                        <div class="p-2 {% if esFinalizado %}bg-success-subtle{% else %}bg-light{% endif %} rounded me-3">
+                                            <i data-lucide="calendar-check" class="{% if esFinalizado %}text-success{% else %}text-muted{% endif %}" style="width: 18px;"></i>
+                                        </div>
+                                        <div>
+                                            <span class="d-block small text-muted">Fecha Devolución Real</span>
+                                            <span class="fw-bold">
+                                                {% if prestamo.fDevo %}
+                                                    {{ prestamo.fDevo|date('d/m/Y H:i') }}
+                                                {% else %}
+                                                    <span class="text-muted fw-normal">Pendiente...</span>
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4 opacity-25">
+
+                        {# Botones de Acción #}
+                        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                            <div>
+                                <a href="{{ path('app_prestamo_index') }}" class="btn btn-link text-muted text-decoration-none px-0">
+                                    <i data-lucide="arrow-left" class="me-1" style="width: 18px;"></i> Volver al listado
+                                </a>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                {# Si el préstamo no ha terminado, mostramos botón de finalizar #}
+                                {% if not esFinalizado %}
+                                    <a href="{{ path('app_prestamo_finalizar', {'id': prestamo.id}) }}" class="btn btn-success px-4 d-flex align-items-center rounded-3 shadow-sm">
+                                        <i data-lucide="log-in" class="me-2" style="width: 18px;"></i> Registrar Devolución
+                                    </a>
+                                {% endif %}
+
+                                <a href="{{ path('app_prestamo_edit', {'id': prestamo.id}) }}" class="btn btn-outline-dark px-4 d-flex align-items-center rounded-3">
+                                    <i data-lucide="edit-3" class="me-2" style="width: 18px;"></i> Editar Registro
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

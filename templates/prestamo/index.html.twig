@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Listado de Préstamos{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active small text-muted fw-bold">Préstamos</li>
+{% endblock %}
+
+{% block body %}
+    {% embed 'layout/_list_layout.html.twig' %}
+        {% block titulo %}Préstamos{% endblock %}
+        {% block subtitulo %}Gestión y control de préstamos{% endblock %}
+        {% block ruta_nuevo %}{{ path('app_prestamo_new') }}{% endblock %}
+
+        {% block tabla_cabecera %}
+            <th class="ps-4">DOCENTE</th>
+            <th class="ps-4">LLAVE</th>
+            <th class="ps-4">PRESTADO POR</th>
+            <th class="ps-4">FECHA PRÉSTAMO</th>
+            <th class="ps-4">FECHA DEVOLUCIÓN</th>
+            <th class="ps-4">TIEMPO LÍMITE</th>
+        {% endblock %}
+
+        {% block tabla_cuerpo %}
+            {% for prestamo in prestamos %}
+                <tr>
+                    <td class="ps-4 fw-bold text-dark">{{ prestamo.docente.nombre }}</td>
+                    <td>{{ prestamo.llave.codigo }}</td>
+                    <td>{{ prestamo.personal.nombre }}</td>
+                    <td class="text-center">{{ prestamo.fPrest|date('d/m/Y H:i') }}</td>
+                    <td class="text-center">
+                        {% if prestamo.fDevo %}
+                            {{ prestamo.fDevo|date('d/m/Y H:i') }}
+                        {% else %}
+                            <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1">
+                                <i data-lucide="clock" class="me-1" style="width: 14px;"></i>
+                                Pendiente
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center align-middle">
+                        {% if prestamo.tiempoLim %}
+                            {# 1. CALCULAMOS SI HAY RETRASO (Solo si tiempoLim no es null) #}
+                            {% set esVencido = false %}
+
+                            {# Caso A: Se devolvió tarde #}
+                            {% if prestamo.fDevo and prestamo.fDevo > prestamo.tiempoLim %}
+                                {% set esVencido = true %}
+                                {# Caso B: No se ha devuelto y ya pasó la hora actual #}
+                            {% elseif not prestamo.fDevo and "now"|date('U') > prestamo.tiempoLim|date('U') %}
+                                {% set esVencido = true %}
+                            {% endif %}
+
+                            {# 2. RENDERIZAMOS LA FECHA CON COLOR SI ES NECESARIO #}
+                            {% if esVencido %}
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 fw-bold"
+                                      data-bs-toggle="tooltip" title="Préstamo con retraso">
+                <i data-lucide="alert-circle" class="me-1" style="width: 14px;"></i>
+                {{ prestamo.tiempoLim|date('d/m/Y H:i') }}
+            </span>
+                            {% else %}
+                                <span class="text-muted small">
+                {{ prestamo.tiempoLim|date('d/m/Y H:i') }}
+            </span>
+                            {% endif %}
+
+                        {% else %}
+                            {# 3. CASO NULL: MOSTRAR BADGE DE "SIN LÍMITE" #}
+                            <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1">
+            <i data-lucide="infinity" class="me-1" style="width: 14px;"></i>
+            Sin límite
+        </span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            {# BOTÓN DEVOLVER #}
+                            {% if prestamo.fDevo == null %}
+                            <a href="{{ path('app_prestamo_finalizar', {'id': prestamo.id}) }}"
+                               class="btn btn-sm btn-outline-devolver border-0 shadow-sm btn-action-custom"
+                               data-bs-toggle="tooltip"
+                               title="Registrar Devolución">
+                                <i data-lucide="undo-2" class="icon"></i>
+                            </a>
+                            {% endif %}
+                            {# Botón Ver (Show) #}
+                            <a href="{{ path('app_prestamo_show', {'id': prestamo.id}) }}"
+                               class="btn btn-outline-info btn-sm border-0 shadow-sm btn-action-custom"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               title="Ver detalles">
+                                <i data-lucide="eye" class="icon"></i>
+                            </a>
+
+                            {# Botón para modificar #}
+                            <a href="{{ path('app_prestamo_edit', {'id': prestamo.id}) }}"
+                               class="btn btn-outline-success btn-sm border-0 shadow-sm btn-action-custom btn-action-custom"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               title="Editar préstamo">
+                                <i data-lucide="pencil" class="icon"></i>
+                            </a>
+
+                            {# Botón para eliminar #}
+                            <form id="delete-form-{{ prestamo.id }}" method="post" action="{{ path('app_prestamo_delete', {'id': prestamo.id}) }}">
+                                {# TOKEN DE SEGURIDAD #}
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ prestamo.id) }}">
+                                <button type="button"
+                                        class="btn btn-outline-danger btn-sm shadow-sm border-0"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Eliminar préstamo"
+                                        onclick="confirmDelete({{ prestamo.id }}, 'Se eliminará el préstamo del sistema.')">
+                                    <i data-lucide="trash-2" class="icon"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="3" class="text-center py-4 text-muted">No se encontraron registros</td>
+                </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Al borrar el préstamo, desaparecerá del sistema.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            })
+        }
+    </script>
+{% endblock %}

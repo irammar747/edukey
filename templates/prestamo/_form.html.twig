@@ -1,0 +1,114 @@
+<div class="row g-4">
+    {# --- SECCIÓN: IDENTIFICACIÓN --- #}
+    <div class="col-12">
+        <div class="p-3 border rounded-3 bg-light-subtle">
+            <h6 class="text-uppercase fw-bold mb-3" style="font-size: 0.75rem; letter-spacing: 1px; color: #5A308A;">
+                <i data-lucide="info" class="me-1" style="width: 14px;"></i> Información del Préstamo
+            </h6>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small">
+                        <i data-lucide="key" class="me-1 text-primary" style="width: 16px;"></i> Llave asignada
+                    </label>
+                    {{ form_widget(form.llave, {'attr': {'class': 'tom-select'}}) }}
+                    {{ form_errors(form.llave) }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small">
+                        <i data-lucide="user" class="me-1 text-info" style="width: 16px;"></i> Docente / Solicitante
+                    </label>
+                    {{ form_widget(form.docente, {'attr': {'class': 'tom-select'}}) }}
+                    {{ form_errors(form.docente) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# --- SECCIÓN: Fechas de préstamo --- #}
+    <div class="col-md-6">
+        <label class="form-label fw-bold small text-muted">
+            <i data-lucide="calendar-arrow-right" class="me-1 text-success" style="width: 16px;"></i> F. Préstamo
+        </label>
+        {{ form_widget(form.f_prest) }}
+        {{ form_errors(form.f_prest) }}
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label fw-bold small text-muted">
+            <i data-lucide="timer" class="me-1 text-danger" style="width: 16px;"></i> Tiempo Límite
+        </label>
+        {{ form_widget(form.tiempo_lim) }}
+        {{ form_errors(form.tiempo_lim) }}
+    </div>
+
+    {# --- SECCIÓN: Observaciones --- #}
+    <div class="col-12">
+        <label class="form-label fw-bold small text-muted">
+            <i data-lucide="message-square" class="me-1" style="width: 16px;"></i> Observaciones
+        </label>
+        {{ form_widget(form.observaciones) }}
+        {{ form_errors(form.observaciones) }}
+    </div>
+
+    {# --- SECCIÓN: ADMINISTRACIÓN (Deshabilitada, solo informativa) --- #}
+    <div class="col-md-6">
+        <label class="form-label fw-bold small text-muted">
+            <i data-lucide="shield-check" class="me-1" style="width: 16px;"></i> Atendido por
+        </label>
+        {{ form_widget(form.personal, {'attr': {'class': 'form-select-sm'}}) }}
+    </div>
+
+</div>
+
+
+<script>
+    document.addEventListener("turbo:load", function() {
+        // === 1. INICIALIZACIÓN DE TOMSELECT ===
+        document.querySelectorAll('.tom-select').forEach((el) => {
+            if (el.tomselect) return; // Evita duplicados al navegar con Turbo
+            new TomSelect(el, {
+                create: false,
+                controlInput: '<input>',
+                render: {
+                    no_results: (data, escape) =>
+                        `<div class="no-results p-2 text-muted">No se encontró "${escape(data.input)}"</div>`,
+                },
+                onInitialize: function() {
+                    // Comprobamos si el selector no tiene opciones (lista vacía)
+                    // Object.keys(this.options).length cuenta cuántos elementos cargó Symfony
+                    if (Object.keys(this.options).length === 0) {
+                        // Cambiamos el texto del placeholder dinámicamente
+                        this.settings.placeholder = "No hay llaves disponibles";
+                    }
+                }
+            });
+        });
+
+        // === 2. VALIDACIÓN DE FECHAS (UX) ===
+        // Usamos selectores flexibles para encontrar los inputs generados por Symfony
+        const fPrest = document.querySelector('input[name*="[f_prest]"]');
+        const fLim = document.querySelector('input[name*="[tiempo_lim]"]');
+
+        if (fPrest && fLim) {
+            fLim.addEventListener('change', function() {
+                if (fLim.value && fPrest.value) {
+                    // Comparamos las fechas convirtiéndolas a objetos Date
+                    if (new Date(fLim.value) <= new Date(fPrest.value)) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Fecha no válida',
+                            text: 'El tiempo límite debe ser posterior a la fecha de préstamo.',
+                            confirmButtonColor: '#5A308A'
+                        });
+                        fLim.value = ""; // Reseteamos el campo erróneo
+                    }
+                }
+            });
+        }
+
+        // === 3. REFRESCAR ICONOS DE LUCIDE ===
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+</script>

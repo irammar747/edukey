@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nuevo Préstamo - EduKey{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item">
+        <a href="{{ path('app_prestamo_index') }}" class="text-decoration-none d-flex align-items-center text-muted small fw-bold">
+            Préstamos
+        </a>
+    </li>
+    <li class="breadcrumb-item active small text-muted fw-bold">Nuevo préstamo</li>
+{% endblock %}
+
+{% block body %}
+    {% embed 'layout/_form_layout.html.twig' %}
+        {% block form_icon %}key{% endblock %}
+        {% block form_title %}Crear Nuevo Préstamo{% endblock %}
+        {% block ruta_volver %}{{ path('app_prestamo_index') }}{% endblock %}
+
+        {% block form_content %}
+            {{ include('prestamo/_form.html.twig', { 'is_edit': false }) }}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
