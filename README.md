@@ -19,15 +19,17 @@ Antes de comenzar, asegúrese de tener instalados los siguientes componentes en 
 ### 2.1. Clonar el repositorio
 Abra una terminal y ejecute el siguiente comando para descargar el proyecto:
 ```bash
-git clone <URL_DE_TU_REPOSITORIO>
-cd nombre-de-tu-proyecto
+git clone https://github.com/irammar747/edukey.git
+cd edukey
 ```
+
 ### 2.2. Configuración de Variables de Entorno
-El proyecto utiliza un archivo de configuración para la base de datos. Asegúrese de que su archivo `.env` o `.env.local` contenga la cadena de conexión configurada para los contenedores de Docker:
+El proyecto utiliza un archivo de configuración para la base de datos. Asegúrese de que su archivo `.env` o contenga la cadena de conexión configurada para los contenedores de Docker:
 
 ```env
-DATABASE_URL="mysql://user:user_password@database:3306/mi_proyecto_db?serverVersion=8.0"
+DATABASE_URL="mysql://edukey_user:edukey_password@database:3316/edukey_db?serverVersion=8.0&charset=utf8mb4"
 ```
+
 ## 3. Puesta en Marcha con Docker
 El proyecto está diseñado para automatizar la creación de la infraestructura.
 
@@ -56,7 +58,7 @@ Al levantar el contenedor por primera vez, Docker detectará y ejecutará el vol
 Si necesita resetear la base de datos a su estado original de prueba en cualquier momento, ejecute el siguiente comando:
 
 ```bash
-docker exec -i symfony_db mysql -u user -puser_password mi_proyecto_db < ./docker/mysql/init.sql
+docker exec -i symfony_db mysql -u root -padmin edukey_db < ./docker/mysql/init.sql
 ```
 
 ## 5. Acceso a la Aplicación
@@ -68,10 +70,10 @@ Tras completar los pasos anteriores, la aplicación será accesible a través de
 Para facilitar la evaluación, puede utilizar las siguientes credenciales preconfiguradas:
 
 | Rol | Usuario / Email | Contraseña |
-| :--- | :--- | :--- |
-| **Administrador** | `admin@ejemplo.com` | `admin123` |
-| **Personal** | `personal@ejemplo.com` | `personal123` |
-| **Docente** | `docente@ejemplo.com` | `docente123` |
+| :--- |:----------------| :--- |
+| **Administrador** | `admin`         | `admin123` |
+| **Personal** | `personal`      | `personal123` |
+| **Docente** | `docente`       | `docente123` |
 
 ## 6. Resolución de Problemas Comunes
 
