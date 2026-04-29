@@ -10,7 +10,12 @@
     {% embed 'layout/_list_layout.html.twig' %}
     {% block titulo %}Usuarios{% endblock %}
     {% block subtitulo %}Gestión de personal y permisos del sistema{% endblock %}
-        {% block ruta_nuevo %}{{ path('app_usuario_new') }}{% endblock %}
+
+            {% block ruta_nuevo %}
+                {% if is_granted('ROLE_ADMIN') %}
+                {{ path('app_usuario_new') }}
+                {% endif %}
+            {% endblock %}
 
         {% block tabla_cabecera %}
             <th class="ps-4">USUARIO / EMAIL</th>
@@ -86,6 +91,7 @@
                             <i data-lucide="pencil" class="icon"></i>
                             </a>
 
+                            {% if is_granted('ROLE_ADMIN') %}
                             {# Botón para eliminar #}
                             <form id="delete-form-{{ usuario.id }}" method="post" action="{{ path('app_usuario_delete', {'id': usuario.id}) }}">
                                 {# TOKEN DE SEGURIDAD #}
@@ -95,10 +101,11 @@
                                         data-bs-toggle="tooltip"
                                         data-bs-placement="top"
                                         title="Eliminar usuario"
-                                        onclick="confirmDelete({{ usuario.id }}, 'El usuario perderá el acceso al sistema.')">
+                                        onclick="confirmDelete({{ usuario.id }}, 'El usuario perderá el acceso al sistema y se eliminarán sus préstamos asociados.')">
                                     <i data-lucide="trash-2" class="icon"></i>
                                 </button>
                             </form>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>

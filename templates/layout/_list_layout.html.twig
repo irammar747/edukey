@@ -82,11 +82,15 @@
             </h1>
             <p class="text-muted small mb-0">{% block subtitulo %}{% endblock %}</p>
         </div>
+        {# Capturamos la ruta #}
+        {% set ruta = block('ruta_nuevo')|trim %}
 
+        {% if (is_granted('ROLE_PERSONAL') or is_granted('ROLE_ADMIN')) and ruta is not empty %}
         <a href="{% block ruta_nuevo %}{% endblock %}" class="btn btn-primary shadow-sm d-flex align-items-center px-4 py-2">
             <i data-lucide="plus-circle" class="me-2" style="width: 20px;"></i>
             Crear nuevo
         </a>
+        {% endif %}
     </div>
 
     <div class="card shadow-sm border-0 overflow-hidden rounded-0 rounded-md-4">

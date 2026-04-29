@@ -102,10 +102,24 @@ final class UsuarioController extends AbstractController
     public function delete(Request $request, Usuario $usuario, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$usuario->getId(), $request->getPayload()->getString('_token'))) {
+
+            // Recorremos y borramos todos los préstamos solicitados por usuario
+            foreach ($usuario->getPrestamosSolicitados() as $prestamoSolicitado) {
+                $entityManager->remove($prestamoSolicitado);
+            }
+
+            // También eliminamos los registrados poniendolos a null
+            foreach ($usuario->getPrestamosRegistrados() as $prestamosRegistrado) {
+                $prestamosRegistrado->setPersonal(null);
+            }
+
+            // Una vez vacía la relación, borramos al usuario
             $entityManager->remove($usuario);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Usuario eliminado con éxito.');
         }
-        $this->addFlash('success', 'Usuario eliminado con éxito.');
+
         return $this->redirectToRoute('app_usuario_index', [], Response::HTTP_SEE_OTHER);
     }
 

@@ -10,7 +10,9 @@
     {% embed 'layout/_list_layout.html.twig' %}
         {% block titulo %}Préstamos{% endblock %}
         {% block subtitulo %}Gestión y control de préstamos{% endblock %}
-        {% block ruta_nuevo %}{{ path('app_prestamo_new') }}{% endblock %}
+        {% block ruta_nuevo %}
+                {{ path('app_prestamo_new') }}
+        {% endblock %}
 
         {% block tabla_cabecera %}
             <th class="ps-4">DOCENTE</th>
@@ -24,9 +26,9 @@
         {% block tabla_cuerpo %}
             {% for prestamo in prestamos %}
                 <tr>
-                    <td class="ps-4 fw-bold text-dark">{{ prestamo.docente.nombre }}</td>
+                    <td class="ps-4 fw-bold text-dark">{{ prestamo.docente.apellido1 }}, {{ prestamo.docente.nombre }} </td>
                     <td>{{ prestamo.llave.codigo }}</td>
-                    <td>{{ prestamo.personal.nombre }}</td>
+                    <td>{{ prestamo.personal.apellido1 }}, {{ prestamo.personal.nombre }}</td>
                     <td class="text-center">{{ prestamo.fPrest|date('d/m/Y H:i') }}</td>
                     <td class="text-center">
                         {% if prestamo.fDevo %}
@@ -74,6 +76,15 @@
                     </td>
                     <td class="text-center">
                         <div class="d-flex justify-content-center gap-2">
+                            {# Botón Ver (Show) #}
+                            <a href="{{ path('app_prestamo_show', {'id': prestamo.id}) }}"
+                               class="btn btn-outline-info btn-sm border-0 shadow-sm btn-action-custom"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               title="Ver detalles">
+                                <i data-lucide="eye" class="icon"></i>
+                            </a>
+                            {% if is_granted('ROLE_PERSONAL') or is_granted('ROLE_ADMIN') %}
                             {# BOTÓN DEVOLVER #}
                             {% if prestamo.fDevo == null %}
                             <a href="{{ path('app_prestamo_finalizar', {'id': prestamo.id}) }}"
@@ -83,14 +94,7 @@
                                 <i data-lucide="undo-2" class="icon"></i>
                             </a>
                             {% endif %}
-                            {# Botón Ver (Show) #}
-                            <a href="{{ path('app_prestamo_show', {'id': prestamo.id}) }}"
-                               class="btn btn-outline-info btn-sm border-0 shadow-sm btn-action-custom"
-                               data-bs-toggle="tooltip"
-                               data-bs-placement="top"
-                               title="Ver detalles">
-                                <i data-lucide="eye" class="icon"></i>
-                            </a>
+
 
                             {# Botón para modificar #}
                             <a href="{{ path('app_prestamo_edit', {'id': prestamo.id}) }}"
@@ -114,6 +118,7 @@
                                     <i data-lucide="trash-2" class="icon"></i>
                                 </button>
                             </form>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>

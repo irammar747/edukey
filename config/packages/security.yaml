@@ -54,11 +54,21 @@ security:
             # switch_user: true
 
     # Note: Only the *first* matching rule is applied
+    role_hierarchy:
+        # El Administrador hereda los permisos de Personal
+        ROLE_ADMIN: [ROLE_PERSONAL]
+        # El Personal hereda los permisos básicos de un Usuario
+        ROLE_PERSONAL: ROLE_USER
+
     access_control:
         # Permitir que todos vean el login
         - { path: ^/login, roles: PUBLIC_ACCESS }
-        # Solo administradores pueden gestionar usuarios
-        - { path: ^/usuario, roles: ROLE_ADMIN }
+        # Todos pueden ver su perfil
+        - { path: ^/usuario/me, roles: ROLE_USER }
+        # ACCIONES SENSIBLES: Solo para Admin
+        - { path: ^/usuario/(new|.+/delete), roles: ROLE_ADMIN }
+        # GESTIÓN GENERAL: Personal y Admin pueden entrar
+        - { path: ^/usuario, roles: ROLE_PERSONAL }
         # Cualquier otra ruta requiere estar logueado
         - { path: ^/, roles: ROLE_USER }
 

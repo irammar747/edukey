@@ -142,7 +142,7 @@
                                     <i data-lucide="arrow-left" class="me-1" style="width: 18px;"></i> Volver al listado
                                 </a>
                             </div>
-
+                            {% if is_granted('ROLE_PERSONAL') or is_granted('ROLE_ADMIN') %}
                             <div class="d-flex gap-2">
                                 {# Si el préstamo no ha terminado, mostramos botón de finalizar #}
                                 {% if not esFinalizado %}
@@ -155,6 +155,7 @@
                                     <i data-lucide="edit-3" class="me-2" style="width: 18px;"></i> Editar Registro
                                 </a>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

@@ -12,8 +12,8 @@
 
         <div class="row g-4 justify-content-center">
 
-            {# TARJETA: GESTIÓN DE USUARIOS (Solo Admin) #}
-            {% if is_granted('ROLE_ADMIN') %}
+            {# TARJETA: GESTIÓN DE USUARIOS (Solo Admin y personal) #}
+            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_PERSONAL') %}
                 <div class="col-md-4 col-lg-3">
                     <a href="{{ path('app_usuario_index') }}" class="text-decoration-none">
                         <div class="card h-100 shadow-sm border-0 hover-card text-center p-4">
@@ -87,8 +87,8 @@
                 </div>
             {% endif %}
 
-            {# TARJETA: PRÉSTAMOS #}
-            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_PERSONAL') %}
+            {# TARJETA: PRÉSTAMOS Para todos los usuarios#}
+
                 <div class="col-md-4 col-lg-3">
                     <a href="{{ path('app_prestamo_index') }}" class="text-decoration-none">
                         <div class="card h-100 shadow-sm border-0 hover-card text-center p-4">
@@ -100,7 +100,7 @@
                         </div>
                     </a>
                 </div>
-            {% endif %}
+
         </div>
     </div>
 

@@ -1,0 +1,13 @@
+{# templates/bundles/TwigBundle/Exception/error403.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container text-center py-5">
+        <div class="py-5">
+            <i data-lucide="shield-alert" class="text-danger mb-4" style="width: 80px; height: 80px;"></i>
+            <h1 class="display-4 fw-bold">Acceso Restringido</h1>
+            <p class="lead text-muted">Lo sentimos, no tienes permisos suficientes para acceder a esta sección.</p>
+            <a href="{{ path('app_dashboard') }}" class="btn btn-primary px-4">Volver al inicio</a>
+        </div>
+    </div>
+{% endblock %}

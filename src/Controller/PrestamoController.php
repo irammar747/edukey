@@ -19,8 +19,16 @@ final class PrestamoController extends AbstractController
     #[Route(name: 'app_prestamo_index', methods: ['GET'])]
     public function index(PrestamoRepository $prestamoRepository): Response
     {
+        // Si el usuario tiene ROLE_PERSONAL o ROLE_ADMIN, ve todos los préstamos
+        if ($this->isGranted('ROLE_PERSONAL') || $this->isGranted('ROLE_ADMIN')) {
+            $prestamos = $prestamoRepository->findAll();
+        } else {
+            // Si es un ROLE_USER normal, solo ve los que él solicitó
+            $prestamos = $prestamoRepository->findBy(['docente' => $this->getUser()]);
+        }
+
         return $this->render('prestamo/index.html.twig', [
-            'prestamos' => $prestamoRepository->findAll(),
+            'prestamos' => $prestamos,
         ]);
     }
 
