@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Listado de Alertas{% endblock %}
+
+{% block breadcrumb_items %}
+    <li class="breadcrumb-item active small text-muted fw-bold">Alertas</li>
+{% endblock %}
+
+{% block body %}
+    {% embed 'layout/_list_layout.html.twig' %}
+        {% block titulo %}Alertas{% endblock %}
+        {% block subtitulo %}Gestión y control de alertas{% endblock %}
+        {% block ruta_nuevo %}{% endblock %}
+
+        {% block tabla_cabecera %}
+            <th class="ps-4">FECHA</th>
+            <th data-sortable="false">ESTADO</th>
+            <th data-sortable="false">PRÉSTAMO</th>
+            <th data-sortable="false">TIPO</th>
+        {% endblock %}
+
+        {% block tabla_cuerpo %}
+            {% for alerta in alertas %}
+                <tr>
+                    <td>{{ alerta.fecha|date('d/m/Y H:i') }}</td>
+                    <td>{{ alerta.estado }}</td>
+                    <td class="text-center">
+                        <a href="{{ path('app_prestamo_show', {'id': alerta.prestamo.id}) }}">
+                            {{ alerta.prestamo.id }}
+                        </a>
+                    </td>
+                    <td>{{ alerta.tipoAlerta.nombre }}</td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            {# Botón para modificar #}
+                            <a href="{{ path('app_alerta_edit', {'id': alerta.id}) }}"
+                               class="btn btn-outline-success btn-sm border-0 shadow-sm btn-action-custom"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               title="Editar Alerta">
+                                <i data-lucide="pencil" class="icon"></i>
+                            </a>
+
+                            {# Botón para eliminar #}
+                            <form id="delete-form-{{ alerta.id }}" method="post" action="{{ path('app_alerta_delete', {'id': alerta.id}) }}">
+                                {# TOKEN DE SEGURIDAD #}
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ alerta.id) }}">
+                                <button type="button"
+                                        class="btn btn-outline-danger btn-sm shadow-sm border-0 btn-action-custom"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Eliminar Alerta"
+                                        onclick="confirmDelete({{ alerta.id }}, 'La alerta será eliminada del sistema.')">
+                                    <i data-lucide="trash-2" class="icon"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">No se encontraron registros</td>
+                </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Al borrar la alerta, desaparecerá del sistema.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            })
+        }
+    </script>
+{% endblock %}

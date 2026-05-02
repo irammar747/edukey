@@ -93,9 +93,16 @@
                                title="Registrar Devolución">
                                 <i data-lucide="undo-2" class="icon"></i>
                             </a>
+
+                                {# BOTÓN GENERAR ALERTA #}
+                                <a href="{{ path('app_alerta_new', {'prestamo_id': prestamo.id}) }}"
+                                   class="btn btn-outline-warning btn-sm border-0 shadow-sm btn-action-custom"
+                                   data-bs-toggle="tooltip"
+                                   data-bs-placement="top"
+                                   title="Generar Alerta">
+                                    <i data-lucide="megaphone" class="icon"></i>
+                                </a>
                             {% endif %}
-
-
                             {# Botón para modificar #}
                             <a href="{{ path('app_prestamo_edit', {'id': prestamo.id}) }}"
                                class="btn btn-outline-success btn-sm border-0 shadow-sm btn-action-custom btn-action-custom"

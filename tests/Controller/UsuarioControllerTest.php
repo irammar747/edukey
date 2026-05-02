@@ -49,7 +49,7 @@ final class UsuarioControllerTest extends WebTestCase
             'usuario[apellido1]' => 'Gomez',
             'usuario[apellido2]' => 'Perez',
             // Si el error de 'roles' persiste, es que el formulario OBLIGA a enviarlo.
-            // Prueba a comentar o añadir esta línea según necesites:
+
             // 'usuario[roles]' => ['ROLE_USER'],
         ]);
 

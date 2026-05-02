@@ -1,22 +1,41 @@
-
 services:
-###> doctrine/doctrine-bundle ###
-  database:
-    image: mysql:8.0
-    container_name: symfony_db
-    environment:
-      MYSQL_DATABASE: edukey_db
-      MYSQL_ROOT_PASSWORD: admin
-      MYSQL_USER: edukey_user
-      MYSQL_PASSWORD: edukey_password
-    ports:
-      - "3316:3306"
-    volumes:
-      - database_data:/var/lib/mysql:rw
-      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-###< doctrine/doctrine-bundle ###
+    # Servicio de Base de Datos
+    db:
+        image: mysql:8.0
+        container_name: symfony_db
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: admin
+            MYSQL_DATABASE: edukey_db
+            MYSQL_USER: edukey_user
+            MYSQL_PASSWORD: edukey_password
+        volumes:
+            - db_data:/var/lib/mysql
+            # Mapeamos nuestro script local dentro de la carpeta de inicialización de MySQL
+            - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+        ports:
+            - "3326:3306"
+        networks:
+            - edukey_network
+
+    # Servicio Web (Apache + PHP)
+    web:
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
+        container_name: symfony_web
+        restart: always
+        ports:
+            - "8082:80"
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            - db
+        networks:
+          - edukey_network
+networks:
+  edukey_network:
+    driver: bridge
 
 volumes:
-###> doctrine/doctrine-bundle ###
-  database_data:
-###< doctrine/doctrine-bundle ###
+    db_data:
