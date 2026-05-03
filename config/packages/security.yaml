@@ -69,6 +69,11 @@ security:
         - { path: ^/usuario/(new|.+/delete), roles: ROLE_ADMIN }
         # GESTIÓN GENERAL: Personal y Admin pueden entrar
         - { path: ^/usuario, roles: ROLE_PERSONAL }
+        - { path: ^/departamento, roles: ROLE_PERSONAL }
+        - { path: ^/llave, roles: ROLE_PERSONAL }
+        - { path: ^/recurso, roles: ROLE_PERSONAL }
+        - { path: ^/usuario, roles: ROLE_PERSONAL }
+        - { path: ^/tipo/alerta, roles: ROLE_PERSONAL }
         # Cualquier otra ruta requiere estar logueado
         - { path: ^/, roles: ROLE_USER }
 
