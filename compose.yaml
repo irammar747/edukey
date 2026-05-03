@@ -11,7 +11,7 @@ services:
             MYSQL_PASSWORD: edukey_password
         volumes:
             - db_data:/var/lib/mysql
-            # Mapeamos nuestro script local dentro de la carpeta de inicialización de MySQL
+            # Mapeamos nuestro script dentro de la carpeta de inicialización de MySQL
             - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
         ports:
             - "3326:3306"
