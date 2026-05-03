@@ -45,7 +45,7 @@ final class UsuarioControllerTest extends WebTestCase
             'usuario[username]' => 'usuario_test_new',
             'usuario[password]' => 'password123',
             'usuario[email]'    => 'test@example.com',
-            'usuario[nombre]'   => 'Inma',
+            'usuario[nombre]'   => 'Inmaculada',
             'usuario[apellido1]' => 'Gomez',
             'usuario[apellido2]' => 'Perez',
         ]);
