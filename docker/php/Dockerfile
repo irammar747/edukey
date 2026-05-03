@@ -27,3 +27,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Establecer el directorio de trabajo
 WORKDIR /var/www/html
+
+# 5. Copiar todos los archivos de tu proyecto al contenedor
+COPY . .
+
+# 6. Ejecutar Composer para instalar las dependencias (sin desarrollo para AWS)
+RUN composer install --no-interaction --optimize-autoloader --no-dev
+
+# 7. Dar permisos correctos a Apache sobre los archivos copiados
+RUN chown -R www-data:www-data /var/www/html
