@@ -31,8 +31,11 @@ WORKDIR /var/www/html
 # 5. Copiar todos los archivos de tu proyecto al contenedor
 COPY . .
 
-# 6. Ejecutar Composer para instalar las dependencias (sin desarrollo para AWS)
-RUN composer install --no-interaction --optimize-autoloader --no-dev
+# 6. Ejecutar Composer para instalar las dependencias
+RUN composer install --no-interaction --optimize-autoloader
+RUN php bin/console importmap:install --no-interaction
 
 # 7. Dar permisos correctos a Apache sobre los archivos copiados
 RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 775 /var/www/html/var
+
